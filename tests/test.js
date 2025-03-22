@@ -13,8 +13,13 @@ describe("VibeCoder Full Installation Process Tests", function () {
   // Increase timeout for tests
   this.timeout(60000);
 
-  // Setup test environment before tests
+  // Execute installer.js before tests
   before(function () {
+    // Run installer.js
+    const installerPath = path.join(__dirname, "..", "installer.js");
+    console.log(`Executing installer.js from ${installerPath}...`);
+    execSync(`node "${installerPath}"`, { stdio: "inherit" });
+
     // Create a temporary directory for testing
     testDir = path.join(os.tmpdir(), `vibecoder-tests-${Date.now()}`);
     fs.mkdirSync(testDir, { recursive: true });
