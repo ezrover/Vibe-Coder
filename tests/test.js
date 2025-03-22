@@ -17,12 +17,14 @@ describe("VibeCoder Full Installation Process Tests", function () {
   before(function () {
     // Run installer.js
     const installerPath = path.join(__dirname, "..", "installer.js");
+    console.log("Running installer.js test");
     console.log(`Executing installer.js from ${installerPath}...`);
-    execSync(`node "${installerPath}"`, { stdio: "inherit" });
+    execSync(`cat "${installerPath}" && node "${installerPath}"`, { stdio: "inherit" });
 
     // Create a temporary directory for testing
     testDir = path.join(os.tmpdir(), `vibecoder-tests-${Date.now()}`);
     fs.mkdirSync(testDir, { recursive: true });
+
 
     // Initialize a basic npm project
     execSync("npm init -y", { cwd: testDir });

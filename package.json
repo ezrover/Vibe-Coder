@@ -21,7 +21,6 @@
     "Vibe",
     "VibeCoder",
     "VibeCoder-CLI",
-    "VibeCoder-Installer",
     "VibeCoder-Installer-CLI",
     "Cursor",
     "Copilot",
@@ -43,7 +42,8 @@
     "mocha": "^11.1.0"
   },
   "dependencies": {
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "adm-zip": "^0.5.11"
   },
   "engines": {
     "node": ">=20.0.0"

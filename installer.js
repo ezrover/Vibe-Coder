@@ -20,6 +20,8 @@
  * License: MIT
  */
 
+const https = require('https');
+const AdmZip = require('adm-zip');
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
@@ -403,6 +405,37 @@ async function install() {
     return false;
   }
 
+  // Download and unpack RooFlow
+  console.log('Downloading and unpacking RooFlow...');
+  const zipUrl = 'https://github.com/GreatScottyMac/RooFlow/archive/refs/heads/main.zip';
+  const zipPath = path.join(findProjectRoot(), 'RooFlow.zip');
+  const extractPath = path.join(findProjectRoot(), 'RooFlow');
+
+  try {
+    await new Promise((resolve, reject) => {
+      https.get(zipUrl, (res) => {
+        const file = fs.createWriteStream(zipPath);
+        res.pipe(file);
+        file.on('finish', () => {
+          file.close();
+          console.log('Downloaded RooFlow.zip');
+          resolve();
+        });
+      }).on('error', (err) => {
+        fs.unlinkSync(zipPath);
+        console.error('Error downloading RooFlow.zip:', err.message);
+        reject(err);
+      });
+    });
+
+    const zip = new AdmZip(zipPath);
+    zip.extractAllTo(extractPath, true);
+    console.log('Unpacked RooFlow.zip to RooFlow folder');
+    fs.unlinkSync(zipPath);
+    console.log('Deleted RooFlow.zip');
+  } catch (error) {
+    console.error('Error downloading and unpacking RooFlow:', error.message);
+  }
   // Create tool directories for all supported AI assistants
   createToolDirectories(findProjectRoot());
 
