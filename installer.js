@@ -138,6 +138,11 @@ function findProjectRoot() {
     return process.env.npm_config_local_prefix;
   }
 
+  // Check if running in a CI environment (e.g., GitHub Actions)
+  if (process.env.CI) {
+    return process.cwd();
+  }
+
   // Next check if we're being run from within node_modules
   if (scriptDir.includes("node_modules")) {
     // For any execution from within node_modules, use the parent project directory
