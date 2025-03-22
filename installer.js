@@ -46,8 +46,8 @@ const SYSTEM_PROMPT_FILES = sanitizerScript.SYSTEM_PROMPT_FILES;
  * Each folder should contain the necessary configuration files for that tool.
  */
 const AI_IDE_DIRECTORIES = {
-  ".roo": path.join(__dirname, "RooFlow", "config", ".roo"),
-  "common": path.join(__dirname, "RooFlow", "config"),
+  ".roo": path.join(findProjectRoot(), "RooFlow", "config", ".roo"),
+  "common": path.join(findProjectRoot(), "RooFlow", "config"),
   //".cline": path.join(__dirname, "templates", "cline"),
   //".windsurf": path.join(__dirname, "templates", "windsurf"),
   //".cursor": path.join(__dirname, "templates", "cursor"),
@@ -55,8 +55,7 @@ const AI_IDE_DIRECTORIES = {
 
 // Installation context information - useful for debugging and diagnostics
 const isPostinstall = process.env.npm_lifecycle_event === "postinstall";
-const scriptDir = __dirname;
-const executionDir = process.cwd();
+let executionDir = process.cwd();
 
 /**
  * Generates the list of files to copy based on supported AI tools
@@ -150,9 +149,9 @@ function findProjectRoot() {
   }
 
   // Next check if we're being run from within node_modules
-  if (scriptDir.includes("node_modules")) {
+  if (process.cwd().includes("node_modules")) {
     // For any execution from within node_modules, use the parent project directory
-    return path.resolve(scriptDir, "..", "..");
+    return path.resolve(process.cwd(), "..", "..");
   }
 
   // For direct runs, use current working directory
@@ -202,7 +201,7 @@ function copyFile(srcPath, destPath) {
       return;
     }
 
-    const destFullPath = path.join(findProjectRoot(), destPath);
+    const destFullPath = path.join(process.cwd(), destPath);
 
     // Create directories if they don't exist
     const destDir = path.dirname(destFullPath);
@@ -402,19 +401,22 @@ function verifyTemplateDirectories() {
 async function install() {
   console.log(`${BLUE}RooFlow Installer${RESET}`);
 
-  // Print installation context information (useful for debugging)
-  console.log(`Installation details:`);
-  console.log(`- Script directory: ${scriptDir}`);
-  console.log(`- Working directory: ${executionDir}`);
-  console.log(`- Running as postinstall: ${isPostinstall ? "Yes" : "No"}`);
-  console.log(`- Target directory: ${findProjectRoot()}`);
-  console.log(`- Supported AI tools: ${AI_TOOL_DIRS.join(", ")}\n`);
-
   // Verify template directories exist
   if (!verifyTemplateDirectories()) {
     console.error(`${RED}Installation cannot proceed due to missing template directories${RESET}`);
     return false;
   }
+
+  const projectRoot = findProjectRoot();
+  executionDir = projectRoot;
+
+  // Print installation context information (useful for debugging)
+  console.log(`Installation details:`);
+  console.log(`- Script directory: ${__dirname}`);
+  console.log(`- Working directory: ${executionDir}`);
+  console.log(`- Running as postinstall: ${isPostinstall ? "Yes" : "No"}`);
+  console.log(`- Target directory: ${projectRoot}`);
+  console.log(`- Supported AI tools: ${AI_TOOL_DIRS.join(", ")}\n`);
 
   // Download and unpack RooFlow
   console.log('Downloading and unpacking RooFlow...');
