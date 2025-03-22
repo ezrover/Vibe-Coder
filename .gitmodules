@@ -1,0 +1,18 @@
+
+[submodule "RooCode-Tips-Tricks"]
+	path = RooCode-Tips-Tricks
+	url = https://github.com/Michaelzag/RooCode-Tips-Tricks
+	branch = main
+[submodule "RooFlow"]
+	path = RooFlow
+	url = https://github.com/GreatScottyMac/RooFlow.git
+	branch = main
+[submodule "Cursor-Memory-Bank-Rules"]
+	path = Cursor-Memory-Bank-Rules
+	url = https://gist.github.com/ipenywis/1bdb541c3a612dbac4a14e1e3f4341ab
+[submodule "devin.cursorrules"]
+	path = devin.cursorrules
+	url = https://github.com/grapeot/devin.cursorrules
+[submodule "roo-code-memory-bank"]
+	path = roo-code-memory-bank
+	url = https://github.com/GreatScottyMac/roo-code-memory-bank

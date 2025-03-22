@@ -1,0 +1,51 @@
+{
+  "name": "ez-vibecoder",
+  "version": "0.0.0",
+  "description": "WORD-IN-PROGRESS: Vibe Coding Tools installer for VS Code AI-assisted development",
+  "main": "installer.js",
+  "bin": {
+    "vibecoder": "installer.js"
+  },
+  "scripts": {
+    "postinstall": "node installer.js",
+    "test": "mocha tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ezrover/Vibe-Coder"
+  },
+  "keywords": [
+    "RooCode",
+    "Windsurf",
+    "Cline",
+    "Vibe",
+    "VibeCoder",
+    "VibeCoder-CLI",
+    "VibeCoder-Installer",
+    "VibeCoder-Installer-CLI",
+    "Cursor",
+    "Copilot",
+    "Codeium",
+    "rooflow",
+    "vscode",
+    "ai",
+    "development",
+    "llm",
+    "code-assistant"
+  ],
+  "author": "ezRover",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ezrover/Vibe-Coder/issues"
+  },
+  "homepage": "https://github.com/ezrover/Vibe-Coder#readme",
+  "devDependencies": {
+    "mocha": "^11.1.0"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
