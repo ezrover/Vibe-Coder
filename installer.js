@@ -131,6 +131,8 @@ function getFilesToCopy() {
  * 
  * @returns {string} Path to the project root
  */
+const os = require('os');
+
 function findProjectRoot() {
   // Most important: If we're being run as part of npm install in a directory,
   // npm sets npm_config_local_prefix to that directory
@@ -138,9 +140,13 @@ function findProjectRoot() {
     return process.env.npm_config_local_prefix;
   }
 
-  // Check if running in a CI environment (e.g., GitHub Actions)
-  if (process.env.CI) {
-    return process.cwd();
+  // Check for test directory pattern in parent directories
+  let currentDir = process.cwd();
+  while (currentDir !== path.dirname(currentDir)) {
+    if (path.basename(currentDir).startsWith('vibecoder-tests-')) {
+      return currentDir;
+    }
+    currentDir = path.dirname(currentDir);
   }
 
   // Next check if we're being run from within node_modules
