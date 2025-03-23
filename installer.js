@@ -43,18 +43,18 @@ const AI_IDE_EXTENSIONS = {
     url: "https://codeload.github.com/GreatScottyMac/RooFlow/zip/refs/heads/main",
     templateDir: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo"),
     filesToCopy: [
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-architect"), destFolder: path.join(".roo", "system-prompt-architect")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-ask"), destFolder: path.join(".roo", "system-prompt-ask")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-code"), destFolder: path.join(".roo", "system-prompt-code")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-debug"), destFolder: path.join(".roo", "system-prompt-debug")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-test"), destFolder: path.join(".roo", "system-prompt-test")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-architect"), destFolder: path.join(".roo", "system-prompt-architect.yaml")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-ask"), destFolder: path.join(".roo", "system-prompt-ask.yaml")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-code"), destFolder: path.join(".roo", "system-prompt-code.yaml")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-debug"), destFolder: path.join(".roo", "system-prompt-debug.yaml")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-test"), destFolder: path.join(".roo", "system-prompt-test.yaml")},
 
       {src: path.join(projectRoot, "roo", "RooFlow-main", "default-system-prompt.md"), destFolder: path.join(".roo", "default-system-prompt.md")},
 
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "cline_custom_modes.json"), destFolder: path.join(".roo", "default-mode", "cline_custom_modes.json")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "custom-instructions.yaml"), destFolder: path.join(".roo", "default-mode", "custom-instructions.yaml")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "README.md"), destFolder: path.join(".roo", "default-mode", "README.md")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "role-definition.txt"), destFolder: path.join(".roo", "default-mode", "role-definition.txt")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "cline_custom_modes.json"), destFolder: path.join(".roo", "cline_custom_modes.json")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "custom-instructions.yaml"), destFolder: path.join(".roo", "custom-instructions.yaml")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "README.md"), destFolder: path.join(".roo", "README.md")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "role-definition.txt"), destFolder: path.join(".roo", "role-definition.txt")},
     ],
     additionalFilesToCopy: [
       {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".rooignore"), dest: ".rooignore"},
@@ -673,7 +673,7 @@ async function install() {
         console.log("  1. Open your project in VS Code");
         console.log("  2. Ensure the Roo Code extension is installed");
         console.log(
-          "  3. Follow the instructions in the ./.roo/default-mode/README.md file to setup the defaults and the Memory Bank"
+          "  3. Follow the instructions in the ./.roo/README.md file to setup the defaults and the Memory Bank"
         );
         console.log('  4. Start a new Roo Code chat and say "Hello"');
       } else {
