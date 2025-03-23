@@ -20,11 +20,11 @@
  * License: MIT
  */
 
-const https = require('https');
-const AdmZip = require('adm-zip');
+const https = require("https");
+const AdmZip = require("adm-zip");
 const fs = require("fs");
 const path = require("path");
-const os = require('os');
+const os = require("os");
 const { execSync } = require("child_process");
 const sanitizerScript = require("./sanitizer"); // Import our YAML sanitizer module
 
@@ -35,88 +35,115 @@ const YELLOW = "\x1b[33m"; // Warnings
 const RED = "\x1b[31m"; // Errors
 const RESET = "\x1b[0m"; // Reset color
 
-
 const projectRoot = findProjectRoot();
+const isPostinstall = process.env.npm_lifecycle_event === "postinstall";
 
-let rooFlowPath = path.join(projectRoot, 'RooFlow', 'RooFlow-main', 'config');
+const AI_IDE_EXTENSIONS = {
+  ".roo": {
+    url: "https://codeload.github.com/GreatScottyMac/RooFlow/zip/refs/heads/main",
+    templateDir: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo"),
+    filesToCopy: [
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-architect"), destFolder: path.join(".roo", "system-prompt-architect")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-ask"), destFolder: path.join(".roo", "system-prompt-ask")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-code"), destFolder: path.join(".roo", "system-prompt-code")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-debug"), destFolder: path.join(".roo", "system-prompt-debug")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-test"), destFolder: path.join(".roo", "system-prompt-test")},
 
-// Import AI tool directories from yaml-sanitizer module
-// These define which AI assistant tools we support
-const AI_TOOL_DIRS = sanitizerScript.SUPPORTED_AI_TOOL_DIRS;
-const SYSTEM_PROMPT_FILES = sanitizerScript.SYSTEM_PROMPT_FILES;
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "default-system-prompt.md"), destFolder: path.join(".roo", "default-system-prompt.md")},
 
-/**
- * Template directories for each AI tool
- * -------------------------------------
- * These are the source folders containing template files for each AI tool.
- * Each folder should contain the necessary configuration files for that tool.
- */
-const AI_IDE_DIRECTORIES = {
-  ".roo": path.join(projectRoot, "RooFlow", 'RooFlow-main', "config", ".roo"),
-  "common": path.join(projectRoot, "RooFlow", 'RooFlow-main', "config"),
-  //".cline": path.join(__dirname, "templates", "cline"),
-  //".windsurf": path.join(__dirname, "templates", "windsurf"),
-  //".cursor": path.join(__dirname, "templates", "cursor"),
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "cline_custom_modes.json"), destFolder: path.join(".roo", "default-mode", "cline_custom_modes.json")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "custom-instructions.yaml"), destFolder: path.join(".roo", "default-mode", "custom-instructions.yaml")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "README.md"), destFolder: path.join(".roo", "default-mode", "README.md")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "role-definition.txt"), destFolder: path.join(".roo", "default-mode", "role-definition.txt")},
+    ],
+    additionalFilesToCopy: [
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".rooignore"), dest: ".rooignore"},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roomodes"), dest: ".roomodes"},
+
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "insert-variables.cmd"), dest: "insert-variables.cmd"},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "insert-variables.sh"), dest: "insert-variables.sh"},
+    ],
+  },
+  ".cline": {
+    url: null,
+    templateDir: null, // Placeholder for future template directory
+    filesToCopy: [],
+    additionalFilesToCopy: [],
+  },
+  ".windsurf": {
+    url: null,
+    templateDir: null, // Placeholder for future template directory
+    filesToCopy: [],
+    additionalFilesToCopy: [],
+  },
+  ".cursor": {
+    url: null,
+    configPath: null,
+    templateDir: null, // Placeholder for future template directory
+    filesToCopy: [],
+    additionalFilesToCopy: [],
+  },
+  ".gitlab-copilot": {
+    url: null,
+    templateDir: null, // Placeholder for future template directory
+    filesToCopy: [],
+    additionalFilesToCopy: [],
+  },
 };
 
-// Installation context information - useful for debugging and diagnostics
-const isPostinstall = process.env.npm_lifecycle_event === "postinstall";
+// Consolidated global data for AI IDE extensions
+const AI_TOOL_DIRS = Object.keys(AI_IDE_EXTENSIONS);
 
 /**
  * Generates the list of files to copy based on supported AI tools
  * ---------------------------------------------------------------------
- * This function dynamically builds a copy manifest based on which AI tools
- * are supported. For each tool directory (.roo, .cline, etc.), it adds the
- * appropriate system prompt files. For .roo (primary tool), it also adds
- * the .roomodes configuration file.
- *
- * @returns {Array} Array of file objects with src and dest properties
- *                  - src: Path in the local template directory
- *                  - dest: Destination path in the user's project
+ * Updated to handle the new structure of filesToCopy with destFolder.
  */
 function getFilesToCopy() {
   const files = [];
 
-  // Add common files first (shared across all tools)
-  files.push(
-    { src: path.join(projectRoot, 'RooFlow', 'RooFlow-main', "config", ".rooignore"), dest: ".rooignore" },
-    { src: path.join(projectRoot, 'RooFlow', 'RooFlow-main', "config", ".roomodes"), dest: ".roomodes" },
-    { src: path.join(projectRoot, 'RooFlow', 'RooFlow-main',  "config", "insert-variables.cmd"), dest: "insert-variables.cmd" },
-    { src: path.join(projectRoot, 'RooFlow', 'RooFlow-main', "config", "insert-variables.sh"), dest: "insert-variables.sh" }
-  );
-
-  // Add files for each AI tool directory
+  // Add additional files for each AI tool
   AI_TOOL_DIRS.forEach((dir) => {
-    const templateDir = path.join(projectRoot, 'RooFlow', 'RooFlow-main', "config", dir);
-    console.log(`${YELLOW}Info${RESET}: template directory: ${templateDir}`);
+    const {
+      url,
+      templateDir,
+      additionalFilesToCopy,
+      filesToCopy,
+    } = AI_IDE_EXTENSIONS[dir];
 
-    // Skip if no template directory exists for this tool
-    if (!templateDir || !fs.existsSync(templateDir)) {
-      console.log(`${YELLOW}Warning${RESET}: No template directory found for ${dir}`);
+    // Skip processing if the URL is null
+    if (!url) {
+      console.log(`${YELLOW}Info${RESET}: Skipping ${dir} as it has no URL.`);
       return;
     }
 
-    // Add modes file for each tool
-    const modesFile = `${dir}modes`;
-    const modesPath = path.join(templateDir, modesFile.substring(1)); // Remove the dot for the source path
+    console.log(`${YELLOW}Info${RESET}: template directory: ${templateDir}`);
 
-    if (fs.existsSync(modesPath)) {
-      files.push({ src: modesPath, dest: modesFile });
-    } else if (dir === ".roo") {
-      // .roomodes is required for the primary tool
-      console.log(`${YELLOW}Warning${RESET}: Required modes file missing for ${dir}`);
+    // Add additional files to the copy list
+    if (additionalFilesToCopy) {
+      files.push(...additionalFilesToCopy);
     }
 
-    // Add system prompt files for each AI tool
-    SYSTEM_PROMPT_FILES.forEach((file) => {
-      const srcPath = path.join(templateDir, file);
-      const destPath = path.join(dir, file);
+    // Skip if no template directory exists for this tool
+    if (url !== null && (!templateDir || !fs.existsSync(templateDir))) {
+      console.log(
+        `${YELLOW}Warning${RESET}: No template directory found for ${dir}`
+      );
+      return;
+    }
 
-      // Only add the file if it exists in the template directory
-      if (fs.existsSync(srcPath)) {
-        files.push({ src: srcPath, dest: destPath });
+    // Add filesToCopy for each tool
+    filesToCopy.forEach(({ src, destFolder }) => {
+      if (fs.existsSync(src)) {
+        if (destFolder) {
+          // Construct full destination path using projectRoot
+          const fullDestPath = destFolder;
+          files.push({ src, dest: fullDestPath });
+        } else {
+          console.log(`${YELLOW}Warning${RESET}: Destination folder is undefined for source file: ${src}`);
+        }
       } else {
-        console.log(`${YELLOW}Warning${RESET}: Template file ${file} missing for ${dir}`);
+        console.log(`${YELLOW}Warning${RESET}: Source file does not exist: ${src} for tool: ${dir}`);
       }
     });
   });
@@ -133,7 +160,7 @@ function getFilesToCopy() {
  * 3. Falls back to current working directory (for direct executions)
  *
  * Havingthe correct project root is crucial for installing files in the right location.
- * 
+ *
  * @returns {string} Path to the project root
  */
 function findProjectRoot() {
@@ -146,7 +173,7 @@ function findProjectRoot() {
   // Check for test directory pattern in parent directories
   let currentDir = process.cwd();
   while (currentDir !== path.dirname(currentDir)) {
-    if (path.basename(currentDir).startsWith('vibecoder-tests-')) {
+    if (path.basename(currentDir).startsWith("vibecoder-tests-")) {
       return currentDir;
     }
     currentDir = path.dirname(currentDir);
@@ -160,29 +187,6 @@ function findProjectRoot() {
 
   // For direct runs, use current working directory
   return process.cwd();
-}
-
-/**
- * Creates necessary directories for all supported AI tools
- * --------------------------------------------------------
- * This function ensures all the directory structures required by
- * different AI assistant tools exist before attempting to copy files.
- * It creates these directories if they don't already exist.
- *
- * @param {string} projectRoot - Path to the project root
- */
-function createToolDirectories(projectRoot) {
-  console.log("Creating AI tool directories...");
-
-  AI_TOOL_DIRS.forEach((dir) => {
-    const dirPath = path.join(projectRoot, dir);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-      console.log(`  Created ${BLUE}${dir}${RESET} directory`);
-    } else {
-      console.log(`  ${BLUE}${dir}${RESET} directory already exists`);
-    }
-  });
 }
 
 /**
@@ -200,7 +204,9 @@ function copyFile(srcPath, destPath) {
   return new Promise((resolve, reject) => {
     // Check if source file exists
     if (!fs.existsSync(srcPath)) {
-      console.log(`  ${YELLOW}Warning${RESET}: Source file not found at ${srcPath}`);
+      console.log(
+        `  ${YELLOW}Warning${RESET}: Source file not found at ${srcPath}`
+      );
       resolve(false);
       return;
     }
@@ -222,7 +228,11 @@ function copyFile(srcPath, destPath) {
       fs.copyFileSync(srcPath, destFullPath);
       resolve(true);
     } catch (error) {
-      reject(new Error(`Failed to copy ${srcPath} to ${destFullPath}: ${error.message}`));
+      reject(
+        new Error(
+          `Failed to copy ${srcPath} to ${destFullPath}: ${error.message}`
+        )
+      );
     }
   });
 }
@@ -240,7 +250,9 @@ function copyFile(srcPath, destPath) {
  * @returns {boolean} True if script ran successfully
  */
 function runInsertVariablesScript() {
-  console.log("\nRunning insert-variables script to configure system variables...");
+  console.log(
+    "\nRunning insert-variables script to configure system variables..."
+  );
 
   const isWindows = process.platform === "win32";
   const projectRoot = findProjectRoot();
@@ -258,7 +270,9 @@ function runInsertVariablesScript() {
         });
       } catch (err) {
         // Fallback to cmd script if bash fails
-        console.log(`  ${YELLOW}Bash execution failed, trying Windows cmd script...${RESET}`);
+        console.log(
+          `  ${YELLOW}Bash execution failed, trying Windows cmd script...${RESET}`
+        );
         execSync("insert-variables.cmd", {
           cwd: projectRoot,
           stdio: "inherit",
@@ -317,9 +331,57 @@ function cleanupInsertVariablesScripts() {
 
     console.log(`${GREEN}Cleanup completed successfully${RESET}`);
   } catch (error) {
-    console.error(`${YELLOW}Warning: Failed to clean up insert-variables scripts${RESET}`);
+    console.error(
+      `${YELLOW}Warning: Failed to clean up insert-variables scripts${RESET}`
+    );
     console.error(`  Error: ${error.message}`);
-    console.error("  You may want to delete these files manually for security reasons.");
+    console.error(
+      "  You may want to delete these files manually for security reasons."
+    );
+  }
+}
+
+/**
+ * Cleanup downloaded zip files and extracted extension directories
+ * ------------------------------------------------------------
+ * This function removes temporary zip files and extracted directories
+ * for AI IDE extensions after successful installation.
+ *
+ * @returns {void}
+ */
+function cleanupDownloadedExtensions() {
+  console.log("\nCleaning up downloaded AI extension files...");
+  
+  try {
+    AI_TOOL_DIRS.forEach((extension) => {
+      // Skip if no URL (no download occurred)
+      if (!AI_IDE_EXTENSIONS[extension].url) return;
+
+      const zipPath = path.join(projectRoot, `${extension.substring(1)}.zip`);
+      const extractPath = path.join(projectRoot, extension.substring(1));
+
+      // Remove zip file if it still exists
+      if (fs.existsSync(zipPath)) {
+        fs.unlinkSync(zipPath);
+        console.log(`  Removed ${BLUE}${extension.substring(1)}.zip${RESET}`);
+      }
+
+      // Remove extracted directory if it exists
+      if (fs.existsSync(extractPath)) {
+        fs.rmSync(extractPath, { recursive: true, force: true });
+        console.log(`  Removed ${BLUE}${extension.substring(1)} directory${RESET}`);
+      }
+    });
+
+    console.log(`${GREEN}Extension cleanup completed successfully${RESET}`);
+  } catch (error) {
+    console.error(
+      `${YELLOW}Warning: Failed to clean up downloaded extension files${RESET}`
+    );
+    console.error(`  Error: ${error.message}`);
+    console.error(
+      "  You may want to manually remove any remaining .zip files or extension directories."
+    );
   }
 }
 
@@ -342,13 +404,17 @@ function validateAllToolConfigurations() {
   const fixResult = sanitizerScript.fixDuplicateCapabilities(findProjectRoot());
 
   if (!fixResult) {
-    console.log(`${YELLOW}Warning: Some issues could not be automatically fixed${RESET}`);
+    console.log(
+      `${YELLOW}Warning: Some issues could not be automatically fixed${RESET}`
+    );
     allValid = false;
   }
 
   // Then validate YAML structure across all files
   console.log("\nValidating YAML structure in all configuration files...");
-  const validationSuccess = sanitizerScript.validateFilesWithYaml(findProjectRoot());
+  const validationSuccess = sanitizerScript.validateFilesWithYaml(
+    findProjectRoot()
+  );
 
   if (!validationSuccess) {
     console.log(`${YELLOW}Warning: YAML validation detected issues${RESET}`);
@@ -370,32 +436,31 @@ function verifyTemplateDirectories() {
   console.log("Verifying template directories...");
   let valid = true;
 
-  // Check if common templates exist (required)
-  if (!fs.existsSync(AI_IDE_DIRECTORIES.common)) {
-    console.error(`${RED}Error: Common template directory not found at ${AI_IDE_DIRECTORIES.common}${RESET}`);
-    valid = false;
-  } else {
-    console.log(`  ${GREEN}Found common templates${RESET}`);
-  }
-
   // Check tool-specific templates
   let foundAny = false;
   AI_TOOL_DIRS.forEach((dir) => {
-    const ideDir = AI_IDE_DIRECTORIES[dir];
+    const ideDir = AI_IDE_EXTENSIONS[dir].templateDir;
     if (!ideDir) {
-      console.log(`  ${YELLOW}Warning: No template directory found for ${ideDir}${RESET}`);
+      console.log(
+        `  ${YELLOW}Warning: No template directory found for ${ideDir}${RESET}`
+      );
       return;
     }
+
     if (fs.existsSync(ideDir)) {
       console.log(`  ${GREEN}Found templates for ${ideDir}${RESET}`);
       foundAny = true;
     } else {
-      console.log(`  ${YELLOW}Warning: No templates found for ${ideDir}${RESET}`);
+      console.log(
+        `  ${YELLOW}Warning: No templates found for ${ideDir}${RESET}`
+      );
     }
   });
 
   if (!foundAny) {
-    console.error(`${RED}Error: No tool-specific template directories found${RESET}`);
+    console.error(
+      `${RED}Error: No tool-specific template directories found${RESET}`
+    );
     valid = false;
   }
 
@@ -403,109 +468,132 @@ function verifyTemplateDirectories() {
 }
 
 /**
+ * Downloads and unpacks the specified AI IDE extension
+ * -----------------------------------------------------
+ * This function downloads the zip file for a given AI IDE extension,
+ * extracts it to the appropriate directory, and verifies the config path.
+ *
+ * @param {string} extension - The AI IDE extension (e.g., ".roo", ".cline")
+ * @returns {Promise<void>}
+ */
+async function downloadAndUnpackAIExtension(extension) {
+  const { url, configPath } = AI_IDE_EXTENSIONS[extension];
+
+  // Skip processing if the URL is null
+  if (!url) {
+    console.log(
+      `${YELLOW}Info${RESET}: Skipping download and unpack for ${extension} as it has no URL.`
+    );
+    return;
+  }
+
+  const zipPath = path.join(projectRoot, `${extension.substring(1)}.zip`);
+  const extractPath = path.join(projectRoot, extension.substring(1));
+
+  console.log(`Downloading and unpacking ${extension}...`);
+
+  try {
+    console.log(`Downloading from ${url} to ${zipPath}`);
+    await new Promise((resolve, reject) => {
+      https
+        .get(url, (res) => {
+          if (res.statusCode === 302) {
+            const redirectUrl = res.headers.location;
+            console.log(`Redirecting to ${redirectUrl}`);
+            https
+              .get(redirectUrl, (redirectRes) => {
+                if (redirectRes.statusCode !== 200) {
+                  reject(
+                    new Error(
+                      `Failed to download ${extension}.zip after redirect: HTTP ${redirectRes.statusCode}`
+                    )
+                  );
+                  return;
+                }
+                const file = fs.createWriteStream(zipPath);
+                redirectRes.pipe(file);
+                file.on("finish", () => {
+                  file.close();
+                  console.log(`Downloaded ${extension}.zip successfully`);
+                  resolve();
+                });
+              })
+              .on("error", (redirectErr) => {
+                fs.unlinkSync(zipPath);
+                console.error(
+                  `Error downloading ${extension}.zip after redirect:`,
+                  redirectErr.message
+                );
+                reject(redirectErr);
+              });
+          } else if (res.statusCode !== 200) {
+            reject(
+              new Error(
+                `Failed to download ${extension}.zip: HTTP ${res.statusCode}`
+              )
+            );
+            return;
+          } else {
+            const file = fs.createWriteStream(zipPath);
+            res.pipe(file);
+            file.on("finish", () => {
+              file.close();
+              console.log(`Downloaded ${extension}.zip successfully`);
+              resolve();
+            });
+          }
+        })
+        .on("error", (err) => {
+          fs.unlinkSync(zipPath);
+          console.error(`Error downloading ${extension}.zip:`, err.message);
+          reject(err);
+        });
+    });
+
+    console.log(`Extracting ${extension}.zip to ${extractPath}`);
+    const zip = new AdmZip(zipPath);
+    zip.extractAllTo(extractPath, true);
+    console.log(
+      `Unpacked ${extension}.zip to ${extension.substring(
+        1
+      )} folder successfully`
+    );
+    fs.unlinkSync(zipPath);
+    console.log(`Deleted ${extension}.zip successfully`);
+  } catch (error) {
+    console.error(
+      `Error downloading and unpacking ${extension}: ${error.message}`
+    );
+  }
+}
+
+/**
  * Main installation function
  * --------------------------
- * This is the core function that orchestrates the entire installation process.
- * It handles directory creation, file copies, script execution, YAML validation,
- * and provides appropriate feedback to the user throughout the process.
+ * Updated to handle multiple AI IDE extensions dynamically.
  */
 async function install() {
   console.log(`${BLUE}RooFlow Installer${RESET}`);
-
 
   // Print installation context information (useful for debugging)
   console.log(`Installation details:`);
   console.log(`- Script directory: ${__dirname}`);
   console.log(`- Target directory: ${projectRoot}`);
-  console.log(`- RooFlow directories: ${rooFlowPath}`);
   console.log(`- Running as postinstall: ${isPostinstall ? "Yes" : "No"}`);
   console.log(`- Supported AI tools: ${AI_TOOL_DIRS.join(", ")}\n`);
 
-  // Download and unpack RooFlow
-  // Create RooFlow directory if it doesn't exist
-  if (!fs.existsSync(rooFlowPath)) {
-    fs.mkdirSync(rooFlowPath, { recursive: true });
-    console.log('Created RooFlow config directory');
-  }
-  console.log('Downloading and unpacking RooFlow...');
-  const zipUrl = 'https://codeload.github.com/GreatScottyMac/RooFlow/zip/refs/heads/main';
-
-  const zipPath = path.join(projectRoot, 'RooFlow.zip');
-  const extractPath = path.join(projectRoot, 'RooFlow');
-
-  try {
-    console.log(`Downloading RooFlow from ${zipUrl} to ${zipPath}`);
-    await new Promise((resolve, reject) => {
-      https.get(zipUrl, (res) => {
-        if (res.statusCode === 302) {
-          // Handle redirect
-          const redirectUrl = res.headers.location;
-          console.log(`Redirecting to ${redirectUrl}`);
-          https.get(redirectUrl, (redirectRes) => {
-            if (redirectRes.statusCode !== 200) {
-              reject(new Error(`Failed to download RooFlow.zip after redirect: HTTP ${redirectRes.statusCode}`));
-              return;
-            }
-            const file = fs.createWriteStream(zipPath);
-            redirectRes.pipe(file);
-            file.on('finish', () => {
-              file.close();
-              console.log('Downloaded RooFlow.zip successfully');
-              resolve();
-            });
-          }).on('error', (redirectErr) => {
-            fs.unlinkSync(zipPath);
-            console.error('Error downloading RooFlow.zip after redirect:', redirectErr.message);
-            reject(redirectErr);
-          });
-        } else if (res.statusCode !== 200) {
-          reject(new Error(`Failed to download RooFlow.zip: HTTP ${res.statusCode}`));
-          return;
-        } else {
-          const file = fs.createWriteStream(zipPath);
-          res.pipe(file);
-          file.on('finish', () => {
-            file.close();
-            console.log('Downloaded RooFlow.zip successfully');
-            resolve();
-          });
-        }
-      }).on('error', (err) => {
-        fs.unlinkSync(zipPath);
-        console.error('Error downloading RooFlow.zip:', err.message);
-        reject(err);
-      });
-    });
-
-    console.log(`Extracting RooFlow.zip to ${extractPath}`);
-    const zip = new AdmZip(zipPath);
-    zip.extractAllTo(extractPath, true);
-    console.log('Unpacked RooFlow.zip to RooFlow folder successfully');
-    fs.unlinkSync(zipPath);
-    console.log('Deleted RooFlow.zip successfully');
-
-    // Check if RooFlow/config directory exists after extraction
-    if (!fs.existsSync(rooFlowPath)) {
-      console.error('Error: RooFlow/config directory not found after extraction');
-    }
-  } catch (error) {
-    console.error(`Error downloading and unpacking RooFlow: ${error.message}. Stack: ${error.stack}`);
+  // Download and unpack each AI IDE extension
+  for (const extension of AI_TOOL_DIRS) {
+    await downloadAndUnpackAIExtension(extension);
   }
 
   // Verify template directories exist
   if (!verifyTemplateDirectories()) {
-    console.error(`${RED}Installation cannot proceed due to missing template directories${RESET}`);
+    console.error(
+      `${RED}Installation cannot proceed due to missing template directories${RESET}`
+    );
     return false;
   }
-
-  // Create tool directories for all supported AI assistants
-  // Create RooFlow directory if it doesn't exist
-  if (!fs.existsSync(rooFlowPath)) {
-    fs.mkdirSync(rooFlowPath, { recursive: true });
-    console.log('Created RooFlow config directory');
-  }
-
-  createToolDirectories(rooFlowPath);
 
   // Get list of files to copy based on supported tools
   const FILES = getFilesToCopy();
@@ -522,7 +610,11 @@ async function install() {
       if (!success) {
         console.log(`  ${YELLOW}Warning: Failed to copy ${file.src}${RESET}`);
         if (file.dest.includes("modes")) {
-          console.log(`  ${YELLOW}Note: Missing modes file for ${path.dirname(file.dest)}${RESET}`);
+          console.log(
+            `  ${YELLOW}Note: Missing modes file for ${path.dirname(
+              file.dest
+            )}${RESET}`
+          );
         }
         copySuccess = false;
       }
@@ -548,40 +640,59 @@ async function install() {
     if (scriptSuccess) {
       // Clean up temporary files after successful setup
       cleanupInsertVariablesScripts();
+      cleanupDownloadedExtensions();
 
       if (validationSuccess) {
         // Report successful installation
         console.log(`\n${GREEN}Installation complete!${RESET}`);
-        console.log("Your project is now configured to use the following AI tools:");
+        console.log(
+          "Your project is now configured to use the following AI tools:"
+        );
 
         AI_TOOL_DIRS.forEach((dir) => {
-          console.log(`  ${BLUE}${dir}${RESET} - Contains system prompt files for ${dir.substring(1)}`);
+          console.log(
+            `  ${BLUE}${dir}${RESET} - Contains system prompt files for ${dir.substring(
+              1
+            )}`
+          );
         });
 
         console.log("\nDirectory structure created:");
         AI_TOOL_DIRS.forEach((dir) => {
           console.log(`  ${dir}/ - System prompt files`);
           if (dir === ".roo") {
-            console.log("  .roomodes - Mode configuration file for RooFlow");
+            console.log("  .roomodes - Mode configurations file for RooFlow");
+            console.log("  .rooignore - ignore file for RooFlow");
           }
         });
 
-        console.log("\nThe memory-bank directory will be created automatically when you first use the AI tools.");
+        console.log(
+          "\nThe memory-bank directory will be created automatically when you first use the AI tools."
+        );
         console.log("\nTo start using RooFlow (primary tool):");
         console.log("  1. Open your project in VS Code");
         console.log("  2. Ensure the Roo Code extension is installed");
-        console.log('  3. Start a new Roo Code chat and say "Hello"');
+        console.log(
+          "  3. Follow the instructions in the ./.roo/default-mode/README.md file to setup the defaults and the Memory Bank"
+        );
+        console.log('  4. Start a new Roo Code chat and say "Hello"');
       } else {
         // Installation completed but with warnings
         console.log(`\n${YELLOW}Installation completed with warnings${RESET}`);
-        console.log("Some system prompt files may have YAML issues that need manual attention.");
-        console.log("Your project is configured, but you may encounter issues.");
+        console.log(
+          "Some system prompt files may have YAML issues that need manual attention."
+        );
+        console.log(
+          "Your project is configured, but you may encounter issues."
+        );
         console.log("\nTo fix YAML issues, you can run the validation again:");
         console.log("  node node_modules/vibecoder/sanitizer.js");
       }
 
       // Provide recovery options for any issues
-      console.log("\nIf you have any issues with automatic installation, you can always:");
+      console.log(
+        "\nIf you have any issues with automatic installation, you can always (NOTE that the files will be overwritten so be careful!):"
+      );
       console.log('- Run "npm run setup" in your project');
       console.log('- Run "node node_modules/vibecode/installer.js" directly');
     } else {
@@ -608,7 +719,7 @@ process.on("uncaughtException", (error) => {
   console.error(error);
   console.error("\nIf installation failed, you can run it manually:");
   console.error("- npm run setup");
-  console.error("- node node_modules/vibecoder/install.js");
+  console.error("- node node_modules/vibecode/installer.js");
   process.exit(1);
 });
 

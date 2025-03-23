@@ -55,3 +55,6 @@ Reference: https://docs.roocode.com/
 ## Windsurf Rules Bank
 Reference: https://windsurf.run/
 
+## RooFlow Installer
+Inspired by: https://github.com/amir-arad/rooflow
+
