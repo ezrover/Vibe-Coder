@@ -2,7 +2,16 @@
 
 
 # Vibe-Coder
-Vibe Coding with Cursor, Windsurf, RooCode, Cline, Copilot, and Claude-Dev. May the best coder win!!!
+Vibe Coding with Cursor, Windsurf, RooCode, Cline, Copilot, and Claude-Dev. May the best AI coder win!!!
+
+
+### Roo Flow's Key Benefit
+
+- 🧠 **Memory Bank**: Persistent storage for project knowledge (automatically managed).
+- 💻 **System Prompts**: YAML-based core instructions for each mode.
+- 🔧 **VS Code Integration**: Seamless development experience within VS Code.
+- ⚡ **Real-time Updates**:  Automatic Memory Bank updates triggered by significant events.
+
 
 # Key Improvements to AI Tools' Memory Banks
 
@@ -12,22 +21,6 @@ Vibe Coding with Cursor, Windsurf, RooCode, Cline, Copilot, and Claude-Dev. May 
 *   **Streamlined Real-time Updates:**  More efficient and targeted Memory Bank updates.
 *   **Clearer Instructions:**  Improved YAML-based rule files for better readability and maintainability.
 
-### Key Components
-
-```mermaid
-flowchart LR
-    A["RooFlow"] --> D["Toolkit"]
-    A["RooFlow"] --> M["Real-time Updates"]
-    D --> C["Mode Rules"]
-    B["Memory Bank"] --> E["Product Context"] & N["Active Context"] & F["Decisions"] & G["Progress"]
-    C --> H["Architect"] & I["Code"] & J["Ask"] & K["Debug"] & L["Test"]
-    M["Real-time Updates"] --> B
-```
-
-- 🧠 **Memory Bank**: Persistent storage for project knowledge (automatically managed).
-- 💻 **System Prompts**: YAML-based core instructions for each mode.
-- 🔧 **VS Code Integration**: Seamless development experience within VS Code.
-- ⚡ **Real-time Updates**:  Automatic Memory Bank updates triggered by significant events.
 
 ## Installation
 
@@ -51,10 +44,12 @@ That's it! This installer will:
 4. Validate the YAML structure of system prompt files
 5. Configure everything to work with VS Code's Roo Code extension
 
+
 ## Requirements
 
-- VS Code with the Roo Code extension installed
+- VS Code, Cursor, or Windsurf with either Roo Code or Cline extensions installed. I personally install all of them as each have different strengths and weaknesses!
 - Node.js
+
 
 ## Manual Installation
 
@@ -72,13 +67,14 @@ Start enjoying RooFlow immediately:
 
 1. Open your project in VS Code / Cursor / or WindSurf
 2. Start a new RooCode/Cline chat and select any of the five integrated modes
-3. Experience the benefits of persistent context and optimized workflows!
+3. Memory mode is activated if you are in Default or Architect mode and will continue to be maintained. Otherwise, you have to manually trigger the mode.
+4. Experience the benefits of persistent context and optimized workflows!
 
 For full usage instructions, refer to the [original RooFlow documentation](https://github.com/GreatScottyMac/RooFlow).
 
 # Inspired by and References
 
-## RooCode Memory Bank
+## Cline Memory Bank
 Inspired by https://github.com/GreatScottyMac/roo-code-memory-bank
 
 ## Windosurf Cascade Memory Bank
