@@ -49,7 +49,7 @@ const AI_IDE_EXTENSIONS = {
       {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-debug"), destFolder: path.join(".roo", "system-prompt-debug.yaml")},
       {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-test"), destFolder: path.join(".roo", "system-prompt-test.yaml")},
 
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "default-system-prompt.md"), destFolder: path.join(".roo", "default-system-prompt.md")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "default-system-prompt.md"), destFolder: path.join(".roo", "system-prompt-default.md")},
 
       {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "cline_custom_modes.json"), destFolder: path.join(".roo", "cline_custom_modes.json")},
       {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "custom-instructions.yaml"), destFolder: path.join(".roo", "custom-instructions.yaml")},
@@ -65,15 +65,25 @@ const AI_IDE_EXTENSIONS = {
     ],
   },
   ".cline": {
-    url: null,
-    templateDir: null, // Placeholder for future template directory
-    filesToCopy: [],
+    url: "https://codeload.github.com/GreatScottyMac/roo-code-memory-bank/zip/refs/heads/main",
+    templateDir: path.join(projectRoot, "cline", "roo-code-memory-bank-main"),
+    filesToCopy: [
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-architect"), destFolder: path.join( ".clinerules-architect")},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-code"), destFolder: path.join( ".clinerules-code")},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-ask"), destFolder: path.join( ".clinerules-ask")},
+      {src: path.join(projectRoot, "clione", "roo-code-memory-bank-main", ".clinerules-debug"), destFolder: path.join( ".clinerules-debug")},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-test"), destFolder: path.join( ".clinerules-test")},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".roomodes"), destFolder: path.join( ".roomodes")},
+    ],
     additionalFilesToCopy: [],
   },
   ".windsurf": {
-    url: null,
-    templateDir: null, // Placeholder for future template directory
-    filesToCopy: [],
+    url: "https://codeload.github.com/GreatScottyMac/cascade-memory-bank/zip/refs/heads/main",
+    templateDir: path.join(projectRoot, "windsurf", "cascade-memory-bank-main"),
+    filesToCopy: [
+      {src: path.join(projectRoot, "windsurf", "cascade-memory-bank-main", ".windsurfrules"), destFolder: path.join( ".windsurfrules")},
+      {src: path.join(projectRoot, "windsurf", "cascade-memory-bank-main", "global_rules.md"), dest: path.join(os.homedir(), ".codeium", "windsurf", "memories", "global_rules.md"), isAbsolutePath: true},
+    ],
     additionalFilesToCopy: [],
   },
   ".cursor": {
@@ -133,14 +143,17 @@ function getFilesToCopy() {
     }
 
     // Add filesToCopy for each tool
-    filesToCopy.forEach(({ src, destFolder }) => {
+    filesToCopy.forEach(({ src, dest, destFolder, isAbsolutePath }) => {
       if (fs.existsSync(src)) {
-        if (destFolder) {
-          // Construct full destination path using projectRoot
-          const fullDestPath = destFolder;
-          files.push({ src, dest: fullDestPath });
+        if (dest) {
+          // If dest is directly provided, use it
+          files.push({ src, dest, isAbsolutePath });
+        } else if (destFolder) {
+          // For backward compatibility with destFolder
+          console.log(`${YELLOW}Note${RESET}: Using deprecated 'destFolder' property for: ${src}`);
+          files.push({ src, dest: destFolder, isAbsolutePath });
         } else {
-          console.log(`${YELLOW}Warning${RESET}: Destination folder is undefined for source file: ${src}`);
+          console.log(`${YELLOW}Warning${RESET}: Destination is undefined for source file: ${src}`);
         }
       } else {
         console.log(`${YELLOW}Warning${RESET}: Source file does not exist: ${src} for tool: ${dir}`);
@@ -200,7 +213,21 @@ function findProjectRoot() {
  * @param {string} destPath - Destination path in the project
  * @returns {Promise} Promise that resolves to true if successful, false if file not found
  */
-function copyFile(srcPath, destPath) {
+/**
+ * Copies a file from template directory to the project or an absolute path
+ * ------------------------------------------------------
+ * This function handles copying a file from the local template directory
+ * to the appropriate location in the project or to an absolute path.
+ * It creates any necessary directories and handles various error conditions.
+ * If the destination file already exists, it will not overwrite it.
+ *
+ * @param {string} srcPath - Source path in the template directory
+ * @param {string} destPath - Destination path (relative to projectRoot or absolute)
+ * @param {boolean} isAbsolutePath - Whether destPath is an absolute path
+ * @param {boolean} forceOverwrite - Whether to overwrite existing files (default: false)
+ * @returns {Promise} Promise that resolves to true if successful, false if file not found or skipped
+ */
+function copyFile(srcPath, destPath, isAbsolutePath = false, forceOverwrite = false) {
   return new Promise((resolve, reject) => {
     // Check if source file exists
     if (!fs.existsSync(srcPath)) {
@@ -211,21 +238,36 @@ function copyFile(srcPath, destPath) {
       return;
     }
 
-    console.log(`  Copying ${BLUE}${srcPath}${RESET} to ${destPath}...`);
+    // Determine the full destination path based on whether it's absolute or relative
+    const destFullPath = isAbsolutePath ? destPath : path.join(projectRoot, destPath);
 
-    const destFullPath = path.join(projectRoot, destPath);
+    // Check if destination file already exists
+    if (fs.existsSync(destFullPath) && !forceOverwrite) {
+      console.log(`  ${BLUE}Skipping${RESET}: File already exists at ${destFullPath}`);
+      console.log(`  ${YELLOW}Note${RESET}: Preserving user modifications`);
+      resolve(true); // Still return true as this is an expected condition
+      return;
+    }
+
+    console.log(`  Copying ${BLUE}${srcPath}${RESET} to ${destPath} ...`);
 
     // Create directories if they don't exist
     const destDir = path.dirname(destFullPath);
     if (!fs.existsSync(destDir)) {
-      fs.mkdirSync(destDir, { recursive: true });
+      try {
+        fs.mkdirSync(destDir, { recursive: true });
+        console.log(`  Created directory: ${destDir}`);
+      } catch (dirError) {
+        console.error(`  ${RED}Error${RESET}: Failed to create directory ${destDir}: ${dirError.message}`);
+        resolve(false);
+        return;
+      }
     }
-
-    console.log(`  Copying ${BLUE}${destPath}${RESET}...`);
 
     try {
       // Perform the file copy
       fs.copyFileSync(srcPath, destFullPath);
+      console.log(`  Successfully copied to ${destFullPath}`);
       resolve(true);
     } catch (error) {
       reject(
@@ -251,7 +293,7 @@ function copyFile(srcPath, destPath) {
  */
 function runInsertVariablesScript() {
   console.log(
-    "\nRunning insert-variables script to configure system variables..."
+    "\nRunning insert-variables script to configure system variables ..."
   );
 
   const isWindows = process.platform === "win32";
@@ -400,7 +442,7 @@ function validateAllToolConfigurations() {
 
   // First attempt to fix any duplicate capabilities sections
   // This is a common issue when updating from older versions
-  console.log("\nChecking and fixing system prompt files...");
+  console.log("\nChecking and fixing system prompt files ...");
   const fixResult = sanitizerScript.fixDuplicateCapabilities(findProjectRoot());
 
   if (!fixResult) {
@@ -411,7 +453,7 @@ function validateAllToolConfigurations() {
   }
 
   // Then validate YAML structure across all files
-  console.log("\nValidating YAML structure in all configuration files...");
+  console.log("\nValidating YAML structure in all configuration files ...");
   const validationSuccess = sanitizerScript.validateFilesWithYaml(
     findProjectRoot()
   );
@@ -433,7 +475,7 @@ function validateAllToolConfigurations() {
  * @returns {boolean} True if template directories exist
  */
 function verifyTemplateDirectories() {
-  console.log("Verifying template directories...");
+  console.log("Verifying template directories ...");
   let valid = true;
 
   // Check tool-specific templates
@@ -477,7 +519,7 @@ function verifyTemplateDirectories() {
  * @returns {Promise<void>}
  */
 async function downloadAndUnpackAIExtension(extension) {
-  const { url, configPath } = AI_IDE_EXTENSIONS[extension];
+  const { url } = AI_IDE_EXTENSIONS[extension];
 
   // Skip processing if the URL is null
   if (!url) {
@@ -490,7 +532,7 @@ async function downloadAndUnpackAIExtension(extension) {
   const zipPath = path.join(projectRoot, `${extension.substring(1)}.zip`);
   const extractPath = path.join(projectRoot, extension.substring(1));
 
-  console.log(`Downloading and unpacking ${extension}...`);
+  console.log(`Downloading and unpacking ${extension} ...`);
 
   try {
     console.log(`Downloading from ${url} to ${zipPath}`);
@@ -551,15 +593,20 @@ async function downloadAndUnpackAIExtension(extension) {
     });
 
     console.log(`Extracting ${extension}.zip to ${extractPath}`);
-    const zip = new AdmZip(zipPath);
-    zip.extractAllTo(extractPath, true);
-    console.log(
-      `Unpacked ${extension}.zip to ${extension.substring(
-        1
-      )} folder successfully`
-    );
-    fs.unlinkSync(zipPath);
-    console.log(`Deleted ${extension}.zip successfully`);
+    try {
+      const zip = new AdmZip(zipPath);
+      zip.extractAllTo(extractPath, true);
+      console.log(`Unpacked ${extension}.zip to ${extension.substring(1)} folder successfully`);
+      
+      // Delete the zip file if it exists
+      if (fs.existsSync(zipPath)) {
+        fs.unlinkSync(zipPath);
+        console.log(`Deleted ${extension}.zip successfully`);
+      }
+    } catch (extractError) {
+      console.error(`Error extracting ${extension}.zip: ${extractError.message}`);
+      // Don't rethrow, let the outer catch handle it
+    }
   } catch (error) {
     console.error(
       `Error downloading and unpacking ${extension}: ${error.message}`
@@ -571,8 +618,12 @@ async function downloadAndUnpackAIExtension(extension) {
  * Main installation function
  * --------------------------
  * Updated to handle multiple AI IDE extensions dynamically.
+ *
+ * @param {Object} options - Installation options
+ * @param {boolean} options.forceOverwrite - Whether to force overwrite existing files
+ * @returns {Promise<boolean>} - Whether installation was successful
  */
-async function install() {
+async function install(options = { forceOverwrite: false }) {
   console.log(`${BLUE}RooFlow Installer${RESET}`);
 
   // Print installation context information (useful for debugging)
@@ -599,13 +650,13 @@ async function install() {
   const FILES = getFilesToCopy();
 
   // Copy all files from templates
-  console.log("Copying template files...");
+  console.log("Copying template files ...");
   let copySuccess = true;
 
   try {
     // Process each file in the copy list
     for (const file of FILES) {
-      const success = await copyFile(file.src, file.dest);
+      const success = await copyFile(file.src, file.dest, file.isAbsolutePath, options.forceOverwrite);
 
       if (!success) {
         console.log(`  ${YELLOW}Warning: Failed to copy ${file.src}${RESET}`);
@@ -713,6 +764,52 @@ async function install() {
   }
 }
 
+/**
+ * Parse command line arguments
+ * ----------------------------
+ * Parses command line arguments to determine installation options.
+ *
+ * @returns {Object} Options object with parsed command line arguments
+ */
+function parseCommandLineArgs() {
+  const args = process.argv.slice(2);
+  const options = {
+    forceOverwrite: false,
+    help: false
+  };
+
+  for (const arg of args) {
+    if (arg === '--force' || arg === '-f') {
+      options.forceOverwrite = true;
+    } else if (arg === '--help' || arg === '-h') {
+      options.help = true;
+    }
+  }
+
+  return options;
+}
+
+/**
+ * Display help information
+ * -----------------------
+ * Shows usage information and available command line options.
+ */
+function showHelp() {
+  console.log(`
+${BLUE}RooFlow Installer Help${RESET}
+Usage: node installer.js [options]
+
+Options:
+  -f, --force    Force overwrite of existing files (by default, existing files are preserved)
+  -h, --help     Display this help message
+
+Examples:
+  node installer.js              # Normal installation (preserves existing files)
+  node installer.js --force      # Force overwrite all files
+  `);
+  process.exit(0);
+}
+
 // Add error handler for better diagnostic information
 process.on("uncaughtException", (error) => {
   console.error(`${RED}Installer encountered an error:${RESET}`);
@@ -720,12 +817,27 @@ process.on("uncaughtException", (error) => {
   console.error("\nIf installation failed, you can run it manually:");
   console.error("- npm run setup");
   console.error("- node node_modules/vibecode/installer.js");
+  console.error("- Add --force to overwrite existing files: node node_modules/vibecode/installer.js --force");
   process.exit(1);
 });
 
+// Parse command line arguments
+const options = parseCommandLineArgs();
+
+// Show help if requested
+if (options.help) {
+  showHelp();
+}
+
 // Run the installation
-console.log("Installer running...");
-install().catch((error) => {
+console.log("Installer running ...");
+if (options.forceOverwrite) {
+  console.log(`${YELLOW}Force overwrite mode enabled${RESET} - Existing files will be overwritten`);
+} else {
+  console.log(`${BLUE}Preserve mode enabled${RESET} - Existing files will be kept`);
+}
+
+install(options).catch((error) => {
   console.error(`${RED}Installation failed:${RESET}`, error);
   process.exit(1);
 });

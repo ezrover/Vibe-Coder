@@ -46,3 +46,8 @@ roo/
 .DS_Store
 RooFlow.zip
 RooFlow/
+.clinerules-architect
+.clinerules-ask
+.clinerules-code
+.clinerules-test
+.windsurfrules
