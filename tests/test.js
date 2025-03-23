@@ -89,11 +89,11 @@ describe("VibeCoder Full Installation Process Tests", function () {
 
       // Verify specific files in `.roo` directory
       const requiredFiles = [
-        "system-prompt-architect",
-        "system-prompt-ask",
-        "system-prompt-code",
-        "system-prompt-debug",
-        "system-prompt-test",
+        "system-prompt-architect.yaml",
+        "system-prompt-ask.yaml",
+        "system-prompt-code.yaml",
+        "system-prompt-debug.yaml",
+        "system-prompt-test.yaml",
       ];
       for (const file of requiredFiles) {
         const filePath = path.join(rooDirPath, file);
@@ -121,11 +121,11 @@ describe("VibeCoder Full Installation Process Tests", function () {
   it("should create all expected files after installation", function () {
     // Correct expected file paths
     const expectedFiles = [
-      path.join(".roo", "system-prompt-architect"),
-      path.join(".roo", "system-prompt-ask"),
-      path.join(".roo", "system-prompt-code"),
-      path.join(".roo", "system-prompt-debug"),
-      path.join(".roo", "system-prompt-test"),
+      path.join(".roo", "system-prompt-architect.yaml"),
+      path.join(".roo", "system-prompt-ask.yaml"),
+      path.join(".roo", "system-prompt-code.yaml"),
+      path.join(".roo", "system-prompt-debug.yaml"),
+      path.join(".roo", "system-prompt-test.yaml"),
       ".roomodes",
       ".rooignore",
     ];
