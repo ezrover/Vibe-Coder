@@ -43,37 +43,37 @@ const AI_IDE_EXTENSIONS = {
     url: "https://codeload.github.com/GreatScottyMac/RooFlow/zip/refs/heads/main",
     templateDir: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo"),
     filesToCopy: [
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-architect"), destFolder: path.join(".roo", "system-prompt-architect.yaml")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-ask"), destFolder: path.join(".roo", "system-prompt-ask.yaml")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-code"), destFolder: path.join(".roo", "system-prompt-code.yaml")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-debug"), destFolder: path.join(".roo", "system-prompt-debug.yaml")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-test"), destFolder: path.join(".roo", "system-prompt-test.yaml")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-architect"), destFolder: path.join(".roo", "system-prompt-architect.yaml"), overwritePermission: true},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-ask"), destFolder: path.join(".roo", "system-prompt-ask.yaml"), overwritePermission: true},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-code"), destFolder: path.join(".roo", "system-prompt-code.yaml"), overwritePermission: true},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-debug"), destFolder: path.join(".roo", "system-prompt-debug.yaml"), overwritePermission: true},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roo", "system-prompt-test"), destFolder: path.join(".roo", "system-prompt-test.yaml"), overwritePermission: true},
 
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "default-system-prompt.md"), destFolder: path.join(".roo", "system-prompt-default.md")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "default-system-prompt.md"), destFolder: path.join(".roo", "system-prompt-default.md"), overwritePermission: false},
 
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "cline_custom_modes.json"), destFolder: path.join(".roo", "cline_custom_modes.json")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "custom-instructions.yaml"), destFolder: path.join(".roo", "custom-instructions.yaml")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "README.md"), destFolder: path.join(".roo", "README.md")},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "role-definition.txt"), destFolder: path.join(".roo", "role-definition.txt")},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "cline_custom_modes.json"), destFolder: path.join(".roo", "cline_custom_modes.json"), overwritePermission: true},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "custom-instructions.yaml"), destFolder: path.join(".roo", "custom-instructions.yaml"), overwritePermission: true},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "README.md"), destFolder: path.join(".roo", "README.md"), overwritePermission: true},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "default-mode", "role-definition.txt"), destFolder: path.join(".roo", "role-definition.txt"), overwritePermission: true},
     ],
     additionalFilesToCopy: [
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".rooignore"), dest: ".rooignore"},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roomodes"), dest: ".roomodes"},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".rooignore"), dest: ".rooignore", overwritePermission: false},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", ".roomodes"), dest: ".roomodes", overwritePermission: true},
 
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "insert-variables.cmd"), dest: "insert-variables.cmd"},
-      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "insert-variables.sh"), dest: "insert-variables.sh"},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "insert-variables.cmd"), dest: "insert-variables.cmd", overwritePermission: true},
+      {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "insert-variables.sh"), dest: "insert-variables.sh", overwritePermission: true},
     ],
   },
   ".cline": {
     url: "https://codeload.github.com/GreatScottyMac/roo-code-memory-bank/zip/refs/heads/main",
     templateDir: path.join(projectRoot, "cline", "roo-code-memory-bank-main"),
     filesToCopy: [
-      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-architect"), destFolder: path.join( ".clinerules-architect")},
-      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-code"), destFolder: path.join( ".clinerules-code")},
-      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-ask"), destFolder: path.join( ".clinerules-ask")},
-      {src: path.join(projectRoot, "clione", "roo-code-memory-bank-main", ".clinerules-debug"), destFolder: path.join( ".clinerules-debug")},
-      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-test"), destFolder: path.join( ".clinerules-test")},
-      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".roomodes"), destFolder: path.join( ".roomodes")},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-architect"), destFolder: path.join( ".clinerules-architect"), overwritePermission: true},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-code"), destFolder: path.join( ".clinerules-code"), overwritePermission: true},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-ask"), destFolder: path.join( ".clinerules-ask"), overwritePermission: true},
+      {src: path.join(projectRoot, "clione", "roo-code-memory-bank-main", ".clinerules-debug"), destFolder: path.join( ".clinerules-debug"), overwritePermission: true},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".clinerules-test"), destFolder: path.join( ".clinerules-test"), overwritePermission: true},
+      {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".roomodes"), destFolder: path.join( ".roomodes"), overwritePermission: true},
     ],
     additionalFilesToCopy: [],
   },
@@ -81,8 +81,8 @@ const AI_IDE_EXTENSIONS = {
     url: "https://codeload.github.com/GreatScottyMac/cascade-memory-bank/zip/refs/heads/main",
     templateDir: path.join(projectRoot, "windsurf", "cascade-memory-bank-main"),
     filesToCopy: [
-      {src: path.join(projectRoot, "windsurf", "cascade-memory-bank-main", ".windsurfrules"), destFolder: path.join( ".windsurfrules")},
-      {src: path.join(projectRoot, "windsurf", "cascade-memory-bank-main", "global_rules.md"), dest: path.join(os.homedir(), ".codeium", "windsurf", "memories", "global_rules.md"), isAbsolutePath: true},
+      {src: path.join(projectRoot, "windsurf", "cascade-memory-bank-main", ".windsurfrules"), destFolder: path.join( ".windsurfrules"), overwritePermission: true},
+      {src: path.join(projectRoot, "windsurf", "cascade-memory-bank-main", "global_rules.md"), dest: path.join(os.homedir(), ".codeium", "windsurf", "memories", "global_rules.md"), isAbsolutePath: true, overwritePermission: true},
     ],
     additionalFilesToCopy: [],
   },
@@ -149,7 +149,6 @@ function getFilesToCopy() {
           // If dest is directly provided, use it
           files.push({ src, dest, isAbsolutePath });
         } else if (destFolder) {
-          // For backward compatibility with destFolder
           console.log(`${YELLOW}Note${RESET}: Using deprecated 'destFolder' property for: ${src}`);
           files.push({ src, dest: destFolder, isAbsolutePath });
         } else {
