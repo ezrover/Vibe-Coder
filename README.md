@@ -27,13 +27,13 @@ Vibe Coding with Cursor, Windsurf, RooCode, Cline, Copilot, and Claude-Dev. May 
 Adding RooFlow to your project is simple:
 
 ```bash
-npm install --save-dev vibecoder
+npm install --save-dev ez-vibecoder
 ```
 
 Or with yarn:
 
 ```bash
-yarn add --dev vibecoder
+yarn add --dev ez-vibecoder
 ```
 
 That's it! This installer will:
@@ -58,7 +58,7 @@ If the automatic installation doesn't run (which may happen if npm scripts are d
 ```bash
 npm i vibecoder
 
-node node_modules/vibecoder/installer.js
+node node_modules/ez-vibecoder/installer.js
 ```
 
 ## After Installation

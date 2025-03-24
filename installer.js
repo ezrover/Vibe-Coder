@@ -143,14 +143,14 @@ function getFilesToCopy() {
     }
 
     // Add filesToCopy for each tool
-    filesToCopy.forEach(({ src, dest, destFolder, isAbsolutePath }) => {
+    filesToCopy.forEach(({ src, dest, destFolder, isAbsolutePath, overwritePermission }) => {
       if (fs.existsSync(src)) {
         if (dest) {
           // If dest is directly provided, use it
-          files.push({ src, dest, isAbsolutePath });
+          files.push({ src, dest, isAbsolutePath, overwritePermission });
         } else if (destFolder) {
           console.log(`${YELLOW}Note${RESET}: Using deprecated 'destFolder' property for: ${src}`);
-          files.push({ src, dest: destFolder, isAbsolutePath });
+          files.push({ src, dest: destFolder, isAbsolutePath, overwritePermission });
         } else {
           console.log(`${YELLOW}Warning${RESET}: Destination is undefined for source file: ${src}`);
         }
@@ -226,7 +226,7 @@ function findProjectRoot() {
  * @param {boolean} forceOverwrite - Whether to overwrite existing files (default: false)
  * @returns {Promise} Promise that resolves to true if successful, false if file not found or skipped
  */
-function copyFile(srcPath, destPath, isAbsolutePath = false, forceOverwrite = false) {
+function copyFile(srcPath, destPath, isAbsolutePath = false, overwritePermission) {
   return new Promise((resolve, reject) => {
     // Check if source file exists
     if (!fs.existsSync(srcPath)) {
@@ -241,8 +241,8 @@ function copyFile(srcPath, destPath, isAbsolutePath = false, forceOverwrite = fa
     const destFullPath = isAbsolutePath ? destPath : path.join(projectRoot, destPath);
 
     // Check if destination file already exists
-    if (fs.existsSync(destFullPath) && !forceOverwrite) {
-      console.log(`  ${BLUE}Skipping${RESET}: File already exists at ${destFullPath}`);
+    if (fs.existsSync(destFullPath) && !overwritePermission) {
+      console.log(`  ${BLUE}Skipping${RESET}: File already exists at ${destFullPath} and overwritePermission: ${overwritePermission}`);
       console.log(`  ${YELLOW}Note${RESET}: Preserving user modifications`);
       resolve(true); // Still return true as this is an expected condition
       return;
@@ -596,7 +596,7 @@ async function downloadAndUnpackAIExtension(extension) {
       const zip = new AdmZip(zipPath);
       zip.extractAllTo(extractPath, true);
       console.log(`Unpacked ${extension}.zip to ${extension.substring(1)} folder successfully`);
-      
+
       // Delete the zip file if it exists
       if (fs.existsSync(zipPath)) {
         fs.unlinkSync(zipPath);
@@ -622,7 +622,7 @@ async function downloadAndUnpackAIExtension(extension) {
  * @param {boolean} options.forceOverwrite - Whether to force overwrite existing files
  * @returns {Promise<boolean>} - Whether installation was successful
  */
-async function install(options = { forceOverwrite: false }) {
+async function install() {
   console.log(`${BLUE}RooFlow Installer${RESET}`);
 
   // Print installation context information (useful for debugging)
@@ -655,7 +655,7 @@ async function install(options = { forceOverwrite: false }) {
   try {
     // Process each file in the copy list
     for (const file of FILES) {
-      const success = await copyFile(file.src, file.dest, file.isAbsolutePath, options.forceOverwrite);
+      const success = await copyFile(file.src, file.dest, file.isAbsolutePath, file.overwritePermission);
 
       if (!success) {
         console.log(`  ${YELLOW}Warning: Failed to copy ${file.src}${RESET}`);
