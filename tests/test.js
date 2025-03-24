@@ -170,8 +170,8 @@ describe("VibeCoder Installer", function () {
     const packageJson = require(packageJsonPath);
     assert.strictEqual(
       packageJson.name,
-      "vibecoder",
-      "package name should be vibecoder"
+      "ez-vibecoder",
+      "package name should be ez-vibecoder"
     );
     assert.ok(
       packageJson.scripts && packageJson.scripts.postinstall,
