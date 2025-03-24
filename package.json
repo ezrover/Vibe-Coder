@@ -1,6 +1,6 @@
 {
   "name": "ez-vibecoder",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "WORD-IN-PROGRESS: Vibe Coding Tools installer for VS Code AI-assisted development",
   "main": "installer.js",
   "bin": {
