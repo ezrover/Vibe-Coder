@@ -27,34 +27,34 @@ Key insights:
 
 ## 📚 KEY EXAMPLE FILES 
 
-### 1. workflow-examples.mdc
+### 1. workflowExamples.mdc
 Contains essential examples for workflow implementation:
 - Initialization format
 - Documentation setup
 - Task planning structure
 - Section transitions
 
-### 2. command-examples.mdc
+### 2. commandExamples.mdc
 Contains examples for proper command execution:
 - Single command format
 - Command documentation
 - Result reporting
 - Platform-specific adaptations
 
-### 3. reflection-examples.mdc
+### 3. reflectionExamples.mdc
 Contains examples for structured reflection:
 - "What Went Well" format
 - "Challenges" format
 - "Lessons Learned" format
 - "Improvements for Next Time" format
 
-### 4. archive-examples.mdc
+### 4. archiveExamples.mdc
 Contains examples for proper archiving:
 - Archive entry format
 - Cross-linking format
 - Archive cleanup
 
-### 5. creative-phase-examples.mdc
+### 5. creativePhaseExamples.mdc
 Contains examples for structured creative phases:
 - Algorithm design creative phases
 - UI design creative phases
@@ -67,22 +67,22 @@ Contains examples for structured creative phases:
 At these points in the workflow, you MUST consult the specified reference files:
 
 1. **Start of INITIALIZATION**: 
-   - workflow-examples.mdc
+   - workflowExamples.mdc
 
 2. **Start of TASK PLANNING**:
-   - workflow-examples.mdc
+   - workflowExamples.mdc
 
 3. **Before FIRST COMMAND in IMPLEMENTATION**:
-   - command-examples.mdc
+   - commandExamples.mdc
 
 4. **Start of REFLECTION**:
-   - reflection-examples.mdc
+   - reflectionExamples.mdc
 
 5. **Start of ARCHIVING**:
-   - archive-examples.mdc
+   - archiveExamples.mdc
 
 6. **When encountering PLATFORM-SPECIFIC ISSUES**:
-   - platform-awareness.mdc
+   - platformAwarenessRule.mdc
 
 ## 📚 REFERENCE CHECK EXAMPLES
 
@@ -90,7 +90,7 @@ At these points in the workflow, you MUST consult the specified reference files:
 
 ```
 📚 REFERENCE CHECK:
-- CONSULTING: workflow-examples.mdc
+- CONSULTING: workflowExamples.mdc
 - PURPOSE: Ensuring proper initialization format
 - CRITICAL ELEMENTS: Task objective, Status tracking, Verification commitment
 
@@ -108,7 +108,7 @@ Key insights:
 
 ```
 📚 REFERENCE CHECK:
-- CONSULTING: command-examples.mdc
+- CONSULTING: commandExamples.mdc
 - PURPOSE: Ensuring proper command documentation
 - CRITICAL ELEMENTS: Command format, platform awareness, error handling
 
@@ -126,7 +126,7 @@ Key insights:
 
 ```
 📚 REFERENCE CHECK:
-- CONSULTING: platform-awareness.mdc
+- CONSULTING: platformAwarenessRule.mdc
 - PURPOSE: Adapting commands for current platform
 - CRITICAL ELEMENTS: OS-specific syntax, path differences, command alternatives
 

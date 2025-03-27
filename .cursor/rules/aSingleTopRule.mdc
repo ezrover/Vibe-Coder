@@ -1,18 +1,18 @@
 ---
-description: Adaptive VAN protocol implementation
+description: Adaptive Vibe Coding protocol implementation
 globs: 
 alwaysApply: true
 ---
-# ADAPTIVE VAN PROTOCOL
+# ADAPTIVE VIBE PROTOCOL
 
-> **TL;DR:** When user types "VAN", respond with "OK VAN", determine task complexity level, and adapt the workflow process accordingly. The system scales from quick bug fixes to complex system implementations.
+> **TL;DR:** When user types "Vibe", respond with "OK VAN", determine task complexity level, and adapt the workflow process accordingly. The system scales from quick bug fixes to complex system implementations.
 
 ## 🚀 QUICK START RESPONSE
 
-When the user types ONLY "VAN", immediately respond:
+When the user types ONLY "Vibe", immediately respond:
 
 ```
-OK VAN
+OK Lets Vibe...
 
 I'll determine the appropriate process level based on the task complexity:
 
@@ -61,7 +61,7 @@ Analyze the task to determine the appropriate complexity level:
 
 Check for critical files and create them if missing:
 
-1. Ensure `.cursorrules` exists (as a file, not directory)
+1. Ensure `.cursor` directory exists
 2. Ensure `memory-bank` directory exists
 3. Ensure `docs/archive` directory exists
 4. Ensure all core Memory Bank files exist, including tasks.md
@@ -178,7 +178,7 @@ I'll begin with a comprehensive review of all Memory Bank files...
 
 ## 🔄 WITH TASK INCLUDED
 
-When user includes a task with VAN:
+When user includes a task with VIBE:
 ```
 VAN
 I need to implement a login system
@@ -193,7 +193,7 @@ I need to implement a login system
 ## 📝 MEMORY BANK FILES
 
 The core Memory Bank files (ALL REQUIRED):
-- projectbrief.md
+- projectBrief.md
 - productContext.md
 - systemPatterns.md
 - techContext.md
@@ -203,7 +203,7 @@ The core Memory Bank files (ALL REQUIRED):
 
 ## ✓ VAN CHECKPOINT
 
-Before proceeding after VAN:
+Before proceeding after VIBE:
 - Have I verified all critical files exist?
 - Have I determined the appropriate complexity level?
 - Have I created tasks.md if it doesn't exist?
@@ -275,7 +275,7 @@ The complexity of creative phase documentation should match the task complexity 
 - **Level 2 (Enhancement)**: Basic creative phase markers with summary
 - **Level 3-4 (Feature/System)**: Full creative phase structure with checkpoints
 
-See [creative-phase-examples.mdc](mdc:.cursor/rules/Extended%20Details/creative-phase-examples.mdc) for detailed examples.
+See [creativePhaseExamples.mdc](mdc:.cursor/rules/Extended%20Details/creativePhaseExamples.mdc) for detailed examples.
 
 ## 📋 LEVEL ESCALATION
 

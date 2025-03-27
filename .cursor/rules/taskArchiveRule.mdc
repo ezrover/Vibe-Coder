@@ -38,7 +38,7 @@ Last Updated: YYYY-MM-DD
 [Memory Bank files updated]
 ```
 
-See examples: [archive-examples.mdc](mdc:.cursor/rules/Extended%20Details/archive-examples.mdc)
+See examples: [archiveExamples.mdc](mdc:.cursor/rules/Extended%20Details/archiveExamples.mdc)
 
 ## 🔄 CROSS-LINKING
 
@@ -47,7 +47,7 @@ After archiving, create these cross-links:
 ### In progress.md:
 ```markdown
 ## Completed Tasks
-- [Task Name] - Completed on YYYY-MM-DD, see [archive entry](mdc:../docs/archive/completed_tasks.md#task-task-name-v10)
+- [Task Name] - Completed on YYYY-MM-DD, see [archive entry](mdc:../docs/archive/completedTasks.md#task-task-name-v10)
 ```
 
 ### In activeContext.md:

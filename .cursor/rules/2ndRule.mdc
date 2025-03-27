@@ -87,14 +87,14 @@ Match process complexity to task requirements:
 
 | Critical Process | Reference Link | When to Consult |
 |------------------|----------------|-----------------|
-| Adaptive Workflow | [workflow.mdc](mdc:.cursor/rules/Core%20Implementation/workflow.mdc) | Start of any task |
-| Task Tracking | [task-tracking.mdc](mdc:.cursor/rules/Core%20Implementation/task-tracking.mdc) | When updating task status |
-| Memory Structure | [memory-bank.mdc](mdc:.cursor/rules/Core%20Implementation/memory-bank.mdc) | Before updating docs |
-| Command Safety | [command-execution.mdc](mdc:.cursor/rules/Core%20Implementation/command-execution.mdc) | Before running commands |
-| VAN Protocol | [van-protocol.mdc](mdc:.cursor/rules/Core%20Implementation/van-protocol.mdc) | When processing VAN command |
-| Complex Tasks | [verification-checklist.mdc](mdc:.cursor/rules/Core%20Implementation/verification-checklist.mdc) | For Level 3-4 tasks |
-| Creative Phases | [creative-phase-guidelines.mdc](mdc:.cursor/rules/Core%20Implementation/creative-phase-guidelines.mdc) | For creative work |
-| Creative Triggers | [creative-phase-triggers.mdc](mdc:.cursor/rules/Core%20Implementation/creative-phase-triggers.mdc) | When to enter creative phases |
+| Adaptive Workflow | [workflowRule.mdc](mdc:.cursor/rules/Core%20Implementation/workflowRule.mdc) | Start of any task |
+| Task Tracking | [taskTrackingRule.mdc](mdc:.cursor/rules/Core%20Implementation/taskTrackingRule.mdc) | When updating task status |
+| Memory Structure | [memoryBankRule.mdc](mdc:.cursor/rules/Core%20Implementation/memoryBankRule.mdc) | Before updating docs |
+| Command Safety | [commandExecutionRule.mdc](mdc:.cursor/rules/Core%20Implementation/commandExecutionRule.mdc) | Before running commands |
+| Vibe Protocol | [aSingleTopRule.mdc](mdc:.cursor/rules/Core%20Implementation/aSingleTopRule.mdc) | When processing Vibe command |
+| Complex Tasks | [verificationChecklistRule.mdc](mdc:.cursor/rules/Core%20Implementation/verificationChecklistRule.mdc) | For Level 3-4 tasks |
+| Creative Phases | [creativePhaseGuidelinesRule.mdc](mdc:.cursor/rules/Core%20Implementation/creativePhaseGuidelinesRule.mdc) | For creative work |
+| Creative Triggers | [creativePhaseTriggersRule.mdc](mdc:.cursor/rules/Core%20Implementation/creativePhaseTriggersRule.mdc) | When to enter creative phases |
 
 ## 📝 LEVEL 1: QUICK BUG FIX WORKFLOW
 

@@ -9,7 +9,7 @@ alwaysApply: false
 
 When creating any Memory Bank file, use these templates as the starting point. These are the ESSENTIAL templates that must be used for core files.
 
-⚠️ REFERENCE REQUIRED: For extended and specialized templates, I MUST read templates-extended.mdc.
+⚠️ REFERENCE REQUIRED: For extended and specialized templates, I MUST read templatesExtended.mdc.
 
 ## projectbrief.md Template
 ```markdown

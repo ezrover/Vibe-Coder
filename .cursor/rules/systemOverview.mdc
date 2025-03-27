@@ -68,7 +68,7 @@ Creative phase documentation scales with task complexity:
 - **UI/UX Design**: Explore layout options, information architecture, accessibility
 - **Architecture Planning**: Design component boundaries, communication patterns, security models
 
-See [creative-phase-examples.mdc](mdc:.cursor/rules/Extended%20Details/creative-phase-examples.mdc) for detailed examples.
+See [creative-phase-examples.mdc](mdc:.cursor/rules/Extended%20Details/creativePhaseExamples.mdc) for detailed examples.
 
 ## 📏 RULE TYPES
 
