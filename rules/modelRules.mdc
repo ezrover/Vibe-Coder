@@ -1,0 +1,83 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# MODEL REFERENCE CONSISTENCY RULE
+
+> **TL;DR:** When modifying model-related code, ensure all references to model names, paths, and types are consistently updated across the entire codebase.
+
+## 🔍 CONSISTENCY CHECKS
+
+When modifying ANY of these model-related elements:
+1. Model class/type names
+2. File paths/names
+3. Directory structures
+4. Import statements
+5. Protocol definitions
+
+You MUST check:
+- [ ] All direct references to the model type
+- [ ] All return types in functions/methods
+- [ ] All parameter types in functions/methods
+- [ ] All variable/property declarations
+- [ ] All import statements
+- [ ] All file paths in resource loading code
+- [ ] All directory references
+- [ ] All documentation comments
+
+## ✅ VERIFICATION PROCESS
+
+1. **Search Phase**
+   ```
+   - Use grep_search for exact type names
+   - Use codebase_search for semantic matches
+   - Check all import statements
+   - Verify resource paths
+   ```
+
+2. **Update Phase**
+   ```
+   - Update all direct references
+   - Update function signatures
+   - Update variable declarations
+   - Update import statements
+   - Update resource paths
+   ```
+
+3. **Verification Phase**
+   ```
+   - Compile to verify no type mismatches
+   - Run tests if available
+   - Check resource loading works
+   - Verify documentation is accurate
+   ```
+
+## 🚨 COMMON PITFALLS
+
+1. **Missed References**
+   - Forgetting to update return types
+   - Missing protocol conformance updates
+   - Overlooking documentation comments
+
+2. **Resource Inconsistencies**
+   - Mismatched file paths
+   - Incorrect directory structures
+   - Wrong file extensions
+
+3. **Type Mismatches**
+   - Protocol vs Concrete type confusion
+   - Wrapper vs Core type inconsistencies
+   - Generic type parameter mismatches
+
+## ✓ CHECKLIST
+
+Before completing any model-related change:
+- [ ] All type references updated
+- [ ] All function signatures consistent
+- [ ] All variable declarations aligned
+- [ ] All import statements correct
+- [ ] All resource paths valid
+- [ ] All documentation accurate
+- [ ] Code compiles without errors
+- [ ] Tests pass (if available)
