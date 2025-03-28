@@ -63,6 +63,7 @@ const AI_IDE_EXTENSIONS = {
       {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "insert-variables.cmd"), dest: "insert-variables.cmd", overwritePermission: true},
       {src: path.join(projectRoot, "roo", "RooFlow-main", "config", "insert-variables.sh"), dest: "insert-variables.sh", overwritePermission: true},
     ],
+    directoriesToCopy: [],
   },
   ".cline": {
     url: "https://codeload.github.com/GreatScottyMac/roo-code-memory-bank/zip/refs/heads/main",
@@ -76,6 +77,7 @@ const AI_IDE_EXTENSIONS = {
       {src: path.join(projectRoot, "cline", "roo-code-memory-bank-main", ".roomodes"), destFolder: path.join( ".roomodes"), overwritePermission: true},
     ],
     additionalFilesToCopy: [],
+    directoriesToCopy: [],
   },
   ".windsurf": {
     url: "https://codeload.github.com/GreatScottyMac/cascade-memory-bank/zip/refs/heads/main",
@@ -85,6 +87,7 @@ const AI_IDE_EXTENSIONS = {
       {src: path.join(projectRoot, "windsurf", "cascade-memory-bank-main", "global_rules.md"), dest: path.join(os.homedir(), ".codeium", "windsurf", "memories", "global_rules.md"), isAbsolutePath: true, overwritePermission: true},
     ],
     additionalFilesToCopy: [],
+    directoriesToCopy: [],
   },
   ".cursor": {
     url: null,
@@ -92,12 +95,14 @@ const AI_IDE_EXTENSIONS = {
     templateDir: null, // Placeholder for future template directory
     filesToCopy: [],
     additionalFilesToCopy: [],
+    directoriesToCopy: [],
   },
   ".gitlab-copilot": {
     url: null,
     templateDir: null, // Placeholder for future template directory
     filesToCopy: [],
     additionalFilesToCopy: [],
+    directoriesToCopy: [],
   },
 };
 
@@ -119,6 +124,7 @@ function getFilesToCopy() {
       templateDir,
       additionalFilesToCopy,
       filesToCopy,
+      directoriesToCopy,
     } = AI_IDE_EXTENSIONS[dir];
 
     // Skip processing if the URL is null
@@ -158,6 +164,18 @@ function getFilesToCopy() {
         console.log(`${YELLOW}Warning${RESET}: Source file does not exist: ${src} for tool: ${dir}`);
       }
     });
+    
+    // Process directories to copy if they exist
+    if (directoriesToCopy && Array.isArray(directoriesToCopy)) {
+      directoriesToCopy.forEach(({ src, dest, isAbsolutePath, overwritePermission }) => {
+        if (fs.existsSync(src)) {
+          // Add directory to the list with a special flag to indicate it's a directory
+          files.push({ src, dest, isAbsolutePath, overwritePermission, isDirectory: true });
+        } else {
+          console.log(`${YELLOW}Warning${RESET}: Source directory does not exist: ${src} for tool: ${dir}`);
+        }
+      });
+    }
   });
 
   return files;
@@ -223,7 +241,7 @@ function findProjectRoot() {
  * @param {string} srcPath - Source path in the template directory
  * @param {string} destPath - Destination path (relative to projectRoot or absolute)
  * @param {boolean} isAbsolutePath - Whether destPath is an absolute path
- * @param {boolean} forceOverwrite - Whether to overwrite existing files (default: false)
+ * @param {boolean} overwritePermission - Whether to overwrite existing files (default: false)
  * @returns {Promise} Promise that resolves to true if successful, false if file not found or skipped
  */
 function copyFile(srcPath, destPath, isAbsolutePath = false, overwritePermission) {
@@ -272,6 +290,85 @@ function copyFile(srcPath, destPath, isAbsolutePath = false, overwritePermission
       reject(
         new Error(
           `Failed to copy ${srcPath} to ${destFullPath}: ${error.message}`
+        )
+      );
+    }
+  });
+}
+
+/**
+ * Copies a directory recursively from source to destination
+ * --------------------------------------------------------
+ * This function recursively copies all files and subdirectories from the source
+ * directory to the destination directory. It creates any necessary directories
+ * and handles various error conditions.
+ *
+ * @param {string} srcDir - Source directory path
+ * @param {string} destDir - Destination directory path (relative to projectRoot or absolute)
+ * @param {boolean} isAbsolutePath - Whether destDir is an absolute path
+ * @param {boolean} overwritePermission - Whether to overwrite existing files
+ * @returns {Promise} Promise that resolves to true if successful, false if directory not found
+ */
+function copyDirectory(srcDir, destDir, isAbsolutePath = false, overwritePermission) {
+  return new Promise(async (resolve, reject) => {
+    // Check if source directory exists
+    if (!fs.existsSync(srcDir)) {
+      console.log(
+        `  ${YELLOW}Warning${RESET}: Source directory not found at ${srcDir}`
+      );
+      resolve(false);
+      return;
+    }
+
+    // Determine the full destination path based on whether it's absolute or relative
+    const destFullPath = isAbsolutePath ? destDir : path.join(projectRoot, destDir);
+
+    console.log(`  Copying directory ${BLUE}${srcDir}${RESET} to ${destDir} ...`);
+
+    // Create destination directory if it doesn't exist
+    if (!fs.existsSync(destFullPath)) {
+      try {
+        fs.mkdirSync(destFullPath, { recursive: true });
+        console.log(`  Created directory: ${destFullPath}`);
+      } catch (dirError) {
+        console.error(`  ${RED}Error${RESET}: Failed to create directory ${destFullPath}: ${dirError.message}`);
+        resolve(false);
+        return;
+      }
+    }
+
+    try {
+      // Read all items in the source directory
+      const items = fs.readdirSync(srcDir);
+      
+      // Process each item (file or subdirectory)
+      for (const item of items) {
+        const srcPath = path.join(srcDir, item);
+        const destPath = path.join(destFullPath, item);
+        
+        // Check if it's a directory or a file
+        const stats = fs.statSync(srcPath);
+        
+        if (stats.isDirectory()) {
+          // Recursively copy subdirectory
+          await copyDirectory(srcPath, destPath, true, overwritePermission);
+        } else {
+          // Copy file
+          if (!fs.existsSync(destPath) || overwritePermission) {
+            fs.copyFileSync(srcPath, destPath);
+            console.log(`    Copied file: ${item}`);
+          } else {
+            console.log(`    ${BLUE}Skipping${RESET}: File already exists at ${destPath} and overwritePermission: ${overwritePermission}`);
+          }
+        }
+      }
+      
+      console.log(`  Successfully copied directory to ${destFullPath}`);
+      resolve(true);
+    } catch (error) {
+      reject(
+        new Error(
+          `Failed to copy directory ${srcDir} to ${destFullPath}: ${error.message}`
         )
       );
     }
@@ -653,9 +750,17 @@ async function install() {
   let copySuccess = true;
 
   try {
-    // Process each file in the copy list
+    // Process each file or directory in the copy list
     for (const file of FILES) {
-      const success = await copyFile(file.src, file.dest, file.isAbsolutePath, file.overwritePermission);
+      let success;
+      
+      if (file.isDirectory) {
+        // Copy directory recursively
+        success = await copyDirectory(file.src, file.dest, file.isAbsolutePath, file.overwritePermission);
+      } else {
+        // Copy single file
+        success = await copyFile(file.src, file.dest, file.isAbsolutePath, file.overwritePermission);
+      }
 
       if (!success) {
         console.log(`  ${YELLOW}Warning: Failed to copy ${file.src}${RESET}`);
