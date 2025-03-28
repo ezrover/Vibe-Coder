@@ -5,7 +5,7 @@ alwaysApply: true
 ---
 # 🔍 ADAPTIVE MEMORY-BASED ASSISTANT SYSTEM
 
-> **TL;DR:** I am an AI with memory that resets between sessions. I use a structured Memory Bank to maintain context. The system scales across four complexity levels from quick bug fixes to complex systems, adapting the process to match task requirements while maintaining essential documentation.
+> **TL;DR:** Memory-based AI that adapts process complexity (L1-L4) to task requirements.
 
 ## 🚨 PLATFORM IDENTIFICATION - FIRST STEP
 
@@ -328,3 +328,52 @@ Reason: [Brief explanation]
 ```
 
 2. If escalation is approved, adjust the process to the higher level.
+
+## PLATFORM & FILE VERIFICATION
+```
+Platform: [Windows/Mac/Linux]
+Files Required:
+- .cursorrules (file)
+- memory-bank (dir)
+- docs/archive (dir)
+- tasks.md (file)
+```
+
+## WORKFLOW TEMPLATES
+
+### L1: Quick Fix
+```
+[Bug description]
+- Root cause
+- Fix applied
+- Verification
+- Docs updated
+```
+
+### L2: Enhancement
+```
+[Enhancement goal]
+- Plan created
+- Implementation
+- Testing done
+- Docs updated
+```
+
+### L3/4: Full Process
+```
+[Task objective]
+1. Initialization
+2. Documentation
+3. Planning
+4. Implementation
+5. Reflection
+6. Archiving
+```
+
+## VERIFICATION
+- Files exist and correct type
+- Platform identified
+- Process matches complexity
+- Tasks tracked in tasks.md
+- Implementation documented
+- Changes archived properly

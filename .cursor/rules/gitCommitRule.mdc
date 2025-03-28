@@ -1,8 +1,110 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 
 ---
 description: Git Commit Rule
 globs: *
 ---
+
+# GIT COMMIT PROTOCOL
+
+> **TL;DR:** Write clear, atomic commits using `type(scope): message` format in present tense, imperative mood.
+
+## 📝 COMMIT FORMAT
+
+```
+type(scope): message
+
+[optional body]
+
+[optional footer]
+```
+
+## 🏷️ COMMIT TYPES
+
+- **feat**: New feature
+- **fix**: Bug fix
+- **docs**: Documentation
+- **style**: Formatting
+- **refactor**: Code restructure
+- **test**: Testing
+- **chore**: Maintenance
+
+## ✅ COMMIT RULES
+
+1. **Message Structure**
+   - Present tense ("add" not "added")
+   - Imperative mood ("move" not "moves")
+   - No period at end
+   - 50 chars or less
+
+2. **Body (Optional)**
+   - Blank line after subject
+   - Wrap at 72 chars
+   - Explain what and why
+
+3. **Scope (Optional)**
+   - Component affected
+   - Lowercase, no spaces
+   - Use consistent names
+
+## 💡 VALID EXAMPLES
+
+```
+feat(auth): add Google sign-in option
+fix(api): handle null response from server
+docs(readme): update installation steps
+style(components): format according to style guide
+refactor(database): optimize query performance
+test(utils): add unit tests for date functions
+chore(deps): update dependencies to latest
+```
+
+## 🚫 INVALID EXAMPLES
+
+```
+❌ fixed bug                    # No type
+❌ feat: Added new feature     # Past tense
+❌ style(HEADER): Changed CSS  # Uppercase scope
+❌ docs: updated docs.         # Period at end
+❌ feat: implement...very...long...commit...message  # Too long
+```
+
+## 🔄 WORKFLOW
+
+1. **Stage Changes**
+   ```bash
+   git add <files>
+   ```
+
+2. **Write Commit**
+   ```bash
+   git commit
+   ```
+
+3. **Push Changes**
+   ```bash
+   git push
+   ```
+
+## ⚠️ SAFETY
+
+- One logical change per commit
+- No sensitive data in messages
+- Verify staged files before commit
+- Use .gitignore for secrets
+
+## ✓ VERIFICATION
+
+Before committing, verify:
+- [ ] Correct type selected
+- [ ] Scope is appropriate
+- [ ] Message follows format
+- [ ] Changes are atomic
+- [ ] No sensitive data
 
 # Git Conventional Commits
  

@@ -3,33 +3,161 @@ description: Adaptive structured workflow implementation protocol
 globs: **/src/**", "**/.cursorrules", "**/memory-bank/**
 alwaysApply: true
 ---
-# ADAPTIVE STRUCTURED WORKFLOW PROTOCOL
+# WORKFLOW PROTOCOL
 
-> **TL;DR:** Follow a workflow process that scales based on task complexity. Level 1 (Bug Fix) uses a streamlined process, while Level 4 (Complex System) uses the complete formal process with all checkpoints.
+> **TL;DR:** Adaptive workflow scaling from L1 (quick fix) to L4 (complex system).
 
-## 🔧 TASK COMPLEXITY LEVELS
+## COMPLEXITY LEVELS
 
-The workflow scales across four complexity levels:
+1. **L1: Bug Fix**
+   - Quick fixes, minimal docs
+   - Focus: Resolution speed
 
-1. **Level 1: Quick Bug Fix**
-   - Simple errors, UI glitches, minor issues
-   - Streamlined process with minimal documentation
-   - Focus on rapid resolution and targeted updates
+2. **L2: Enhancement**
+   - Small features, basic docs
+   - Focus: Clean implementation
 
-2. **Level 2: Simple Enhancement**
-   - Small features, minor improvements
-   - Basic process with essential documentation
-   - Focus on clean implementation and clear documentation
+3. **L3: Feature**
+   - Complete features, full tracking
+   - Focus: Comprehensive planning
 
-3. **Level 3: Intermediate Feature**
-   - Complete features, significant changes
-   - Standard process with full section tracking
-   - Focus on comprehensive planning and documentation
+4. **L4: System**
+   - Major changes, formal process
+   - Focus: Architecture integrity
 
-4. **Level 4: Complex System**
-   - Major systems, architectural changes
-   - Full formal process with detailed checkpoints
-   - Focus on architectural integrity and complete documentation
+## SECTION MARKERS
+```
+=== [SECTION] COMPLETE → STARTING [NEXT] ===
+```
+
+## CREATIVE PHASES
+
+### Triggers
+- Multiple viable approaches
+- Complex design decisions
+- Competing constraints
+- Architectural impact
+
+### Template
+```
+=== CREATIVE: [TYPE] ===
+Focus: [Area]
+Goal: [Objective]
+Limits: [Constraints]
+
+Analysis:
+1. [Component/Option 1]
+2. [Component/Option 2]
+
+Decision: [Choice + Rationale]
+Verification: [Requirements check]
+=== END CREATIVE ===
+```
+
+## TRACKING TEMPLATES
+
+### L1
+```
+[ ] Review docs
+[ ] Fix issue
+[ ] Verify
+[ ] Update docs
+```
+
+### L2
+```
+[ ] Review files
+[ ] Plan changes
+[ ] Implement
+[ ] Test
+[ ] Document
+```
+
+### L3/4
+```
+[ ] 1. Init
+[ ] 2. Docs
+[ ] 3. Plan
+[ ] 4. Create
+[ ] 5. Reflect
+[ ] 6. Archive
+```
+
+## WORKFLOWS
+
+### L1: Quick Fix
+1. **Init**
+   - Check relevant files
+   - State bug
+   - ID platform
+
+2. **Fix**
+   - Find root cause
+   - Apply fix
+   - Verify solution
+
+3. **Document**
+   - Update tasks.md
+   - Note in activeContext.md
+
+### L2: Enhancement
+1. **Init**
+   - Review files
+   - State goal
+   - ID platform
+
+2. **Plan**
+   - List steps
+   - Note challenges
+   - Set checkpoints
+
+3. **Create**
+   - Implement changes
+   - Test thoroughly
+   - Update docs
+
+4. **Close**
+   - Mark complete
+   - Archive changes
+
+### L3/4: Full Process
+1. **Init**
+   - Full file review
+   - Clear objective
+   - Platform check
+   - Track sections
+
+2. **Docs**
+   - Update all files
+   - Plan structure
+   - Note patterns
+
+3. **Plan**
+   - Detail steps
+   - ID challenges
+   - Mark creative needs
+
+4. **Create**
+   - Use creative phases
+   - Document all steps
+   - Regular updates
+
+5. **Reflect**
+   - Note successes
+   - List challenges
+   - Record learnings
+
+6. **Archive**
+   - Full documentation
+   - Cross-reference
+   - Update status
+
+## VERIFICATION
+Each section needs:
+- Clear completion
+- Status in tasks.md
+- Next steps identified
+- Docs updated
 
 ## 🚨 SECTION TRANSITION MARKERS
 

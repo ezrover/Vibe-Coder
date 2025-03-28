@@ -3,9 +3,85 @@ description: Memory bank structure and implementation
 globs: **/memory-bank/**", "**/.cursorrules
 alwaysApply: false
 ---
-# CURSOR'S MEMORY BANK SYSTEM
+# MEMORY BANK
 
-> **TL;DR:** The Memory Bank is a set of 6 core files that serve as my persistent memory. I must read ALL files at the start of EVERY task. Create/update files in this order: projectbrief → productContext/systemPatterns/techContext → activeContext → progress.
+> **TL;DR:** Core system for maintaining project context across sessions.
+
+## STRUCTURE
+```
+memory-bank/
+├── projectbrief.md    # Requirements
+├── productContext.md  # Purpose
+├── activeContext.md   # Current focus
+├── systemPatterns.md  # Architecture
+├── techContext.md     # Tech stack
+├── progress.md        # Status
+└── tasks.md          # Task tracking
+```
+
+## FILE PURPOSES
+
+### projectbrief.md
+- Core requirements
+- Project goals
+- Success criteria
+
+### productContext.md
+- Business purpose
+- User needs
+- Key features
+
+### activeContext.md
+- Current work
+- Recent changes
+- Next steps
+
+### systemPatterns.md
+- Architecture
+- Design patterns
+- Tech decisions
+
+### techContext.md
+- Tech stack
+- Dev setup
+- Dependencies
+
+### progress.md
+- Task status
+- Milestones
+- Blockers
+
+### tasks.md
+- Task list
+- Status tracking
+- Dependencies
+
+## UPDATES
+
+### When to Update
+- Task start/end
+- Major decisions
+- Status changes
+- New patterns
+
+### How to Update
+```
+## [Section Name]
+- [Update type]: [Details]
+- [Timestamp]: [Change]
+```
+
+## CROSS-LINKING
+- Link related updates
+- Reference decisions
+- Track dependencies
+- Note impacts
+
+## VERIFICATION
+- Files exist
+- Content current
+- Links valid
+- Tasks tracked
 
 ## 📚 MEMORY BANK STRUCTURE
 

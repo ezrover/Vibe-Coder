@@ -3,9 +3,70 @@ description: Platform-specific command adaptations
 globs: **/src/**", "**/.cursorrules", "**/memory-bank/**
 alwaysApply: false
 ---
-# PLATFORM AWARENESS
+# PLATFORM HANDLING
 
-> **TL;DR:** Always identify the operating system at the beginning of a task. Prefer built-in tools over platform-specific commands when available. When terminal commands are necessary, adapt them according to the platform.
+> **TL;DR:** Adapt commands and paths for Windows/Mac/Linux.
+
+## DETECTION
+```
+OS: [Windows/Mac/Linux]
+Shell: [cmd/powershell/bash/zsh]
+```
+
+## COMMANDS
+
+### File Ops
+```
+# Windows
+echo.> file.txt     # Create
+mkdir folder        # Make dir
+move src dest       # Move
+del file.txt        # Delete
+
+# Unix (Mac/Linux)
+touch file.txt      # Create
+mkdir -p folder     # Make dir
+mv src dest         # Move
+rm file.txt         # Delete
+```
+
+### Navigation
+```
+# Windows
+cd path             # Change dir
+dir                 # List
+type file.txt       # Read
+
+# Unix
+cd path             # Change dir
+ls                  # List
+cat file.txt        # Read
+```
+
+## PATHS
+
+### Windows
+- Backslash: `C:\path\to\file`
+- Drive letters: `C:`, `D:`
+- Max path: 260 chars
+
+### Unix
+- Forward slash: `/path/to/file`
+- Root: `/`
+- No path length limit
+
+## SAFETY
+- One command at a time
+- No command chaining
+- Check paths exist
+- Handle spaces
+- Quote paths
+
+## VERIFICATION
+- OS detected
+- Shell identified
+- Commands adapted
+- Paths valid
 
 ## 🔧 TOOLS-FIRST APPROACH
 

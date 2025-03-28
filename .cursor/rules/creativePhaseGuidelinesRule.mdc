@@ -176,3 +176,91 @@ Before exiting a creative phase, perform a systematic verification (similar to "
 - [ ] Checked for security implications
 - [ ] Assessed performance impacts
 - [ ] Considered testing approach
+
+# CREATIVE PHASE GUIDELINES
+
+> **TL;DR:** Structured approach for complex design decisions. Required for L3-4 tasks.
+
+## TRIGGERS
+Enter creative phase when facing:
+- Multiple viable solutions
+- Complex design choices
+- Competing constraints
+- Architectural decisions
+- Algorithm optimization
+
+## TEMPLATE
+```
+=== CREATIVE: [TYPE] ===
+Focus: [Area]
+Goal: [Objective]
+Limits: [Constraints]
+
+Components:
+1. [Part 1]
+2. [Part 2]
+
+Options:
+A. [Option 1]
+   + Pros
+   - Cons
+
+B. [Option 2]
+   + Pros
+   - Cons
+
+Decision: [Choice]
+Rationale: [Why]
+Verification: [Requirements met]
+=== END CREATIVE ===
+```
+
+## TYPES
+
+### Algorithm Design
+- Data structures
+- Performance optimization
+- Logic implementation
+- Edge case handling
+
+### UI/UX Design
+- Component structure
+- State management
+- User flows
+- Accessibility
+
+### Architecture
+- System boundaries
+- Data patterns
+- Security/Auth
+- Scaling strategy
+
+## PROCESS
+
+1. **Entry**
+   - Stop normal flow
+   - State problem
+   - List constraints
+
+2. **Analysis**
+   - Break down problem
+   - List options
+   - Compare trade-offs
+
+3. **Decision**
+   - Choose solution
+   - Document rationale
+   - Verify requirements
+
+4. **Exit**
+   - Summarize work
+   - List next steps
+   - Update tasks.md
+
+## VERIFICATION
+Before exit, confirm:
+- Problem analyzed
+- Options compared
+- Decision justified
+- Requirements met
+- Next steps clear

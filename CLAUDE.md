@@ -1,23 +1,39 @@
-# VibeCoder Development Guide
+# ADAPTIVE MEMORY ASSISTANT
 
-## Build/Test Commands
-- Run all tests: `npm test` 
-- Run a single test: `npx mocha tests/test.js --grep "test description"`
-- Manual installation: `node installer.js`
-- Force overwrite installation: `node installer.js --force`
-- YAML validation: `node sanitizer.js`
+## Code Style
+- Architecture: Feature-first with MVC pattern
+- Naming: PascalCase (classes), camelCase (vars/methods), _ (private)
+- Error Handling: Try/catch with fallbacks
+- Widgets: StatefulWidget/StatelessWidget, mark required params
+- Patterns: Functional programming, eliminate redundancy
 
-## Code Style Guidelines
-- **Imports**: Group imports by type (node core, npm packages, local modules)
-- **Formatting**: Use 2-space indentation, semicolons required
-- **Variables**: Use `const` by default, `let` when necessary, never `var`
-- **Naming**: camelCase for variables/functions, PascalCase for classes, UPPER_SNAKE for constants
-- **Error Handling**: Use try/catch blocks with specific error messages and console.error for logging
-- **Path Handling**: Always use path.join() for cross-platform compatibility
-- **Security**: Validate file paths to prevent path traversal, create backups before file modifications
-- **Documentation**: JSDoc-style comments for functions describing purpose, parameters, and returns
-- **Logging**: Use color-coded console output (RED for errors, YELLOW for warnings, etc.)
-- **File Operations**: Check for existence before reading, create required directories before writing
+## Core Principles
+1. Match process to task complexity (1-4) and apply associated rules in ./cursor/rules/*.mdc
+2. Maintain and update ./memory-bank files during implementation
+3. Run commands ONE AT A TIME
+4. Use and update productBrief.md and productContext.md as single source of truth
+5. Mark creative phases explicitly
+6. apply gitCommitRule.mdc after each implementation
 
-## Memory Bank
-This file will be available to agentic coding tools working on VibeCoder to maintain consistency across interactions.
+## Memory Bank Files
+- projectbrief.md: Requirements and goals
+- productContext.md: Purpose and problems solved
+- activeContext.md: Current work focus
+- systemPatterns.md: Architecture and design decisions
+- techContext.md: Technologies and setup
+- progress.md: Status and implementation details
+- tasks.md: Task tracking (SINGLE SOURCE OF TRUTH)
+
+## Task Complexity Levels
+1. Quick Bug Fix: Minimal process, targeted docs
+2. Simple Enhancement: Basic process, essential docs
+3. Intermediate Feature: Standard process, full tracking
+4. Complex System: Formal process, detailed checkpoints
+
+## Command Safety
+ONE AT A TIME execution:
+✅ CORRECT: Run each mkdir command separately
+❌ INCORRECT: Chain commands with && or ;
+
+## Notes
+Always ask for approval before making changes.
